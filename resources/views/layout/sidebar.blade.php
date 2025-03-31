@@ -155,12 +155,12 @@
           </ul>
         </div>
       </li>
-      <li class="nav-item nav-category">Listas</li>
+      <li class="nav-item nav-category">Listas de Descuento</li>
       <li class="nav-item {{ active_class(['lista/*']) }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#lista" role="button"
           aria-expanded="{{ is_active_route(['lista/*']) }}" aria-controls="auth">
           <i class="link-icon" data-feather="layers"></i>
-          <span class="link-title"> Listas</span>
+          <span class="link-title"> Listas Descuento</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
         <div class="collapse {{ show_class(['lista/*']) }}" id="lista">
@@ -171,6 +171,27 @@
             </li>
             <li class="nav-item">
               <a href="{{ url('lista/create') }}" class="nav-link {{ active_class(['lista/register']) }}">Alta de
+                Lista</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item nav-category">Listas de Ganancia</li>
+      <li class="nav-item {{ active_class(['listaganancia/*']) }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#listaGanancia" role="button"
+          aria-expanded="{{ is_active_route(['listaganancia/*']) }}" aria-controls="auth">
+          <i class="link-icon" data-feather="layers"></i>
+          <span class="link-title"> Listas Ganancia</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse {{ show_class(['listaganancia/*']) }}" id="listaGanancia">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a href="{{ url('listaganancia/index') }}" class="nav-link {{ active_class(['listaganancia/login']) }}">Listado de
+                Listas</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url('listaganancia/create') }}" class="nav-link {{ active_class(['listaganancia/register']) }}">Alta de
                 Lista</a>
             </li>
           </ul>

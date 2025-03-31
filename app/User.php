@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'password', 'estado','administrador','updated_at','created_at','deleted_at',
+        'nombre', 'password', 'estado','id_rol', 'id_compania', 'administrador','updated_at','created_at','deleted_at',
     ];
 
     /**
@@ -55,5 +55,15 @@ class User extends Authenticatable
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+    }
+
+    public function rol(): BelongsTo
+    {
+        return $this->belongsTo(Rol::class,'id_rol');
+    }
+
+    public function compania(): BelongsTo
+    {
+        return $this->belongsTo(Compania::class,'id_compania');
     }
 }

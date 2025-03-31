@@ -21,7 +21,7 @@
           @csrf
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="nombre_empresa" class="form-label">Nombre De Su Empresa</label>
+              <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label>
               <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" value="{{isset($parametro)?$parametro->nombre_empresa:''}}" autocomplete="off" placeholder="Ingrese el nombre de su empresa...">
             </div>
             <div class="col-md-6 mb-3">
