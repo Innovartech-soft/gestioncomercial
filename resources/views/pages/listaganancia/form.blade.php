@@ -8,10 +8,10 @@
 <!-- Page content here -->
 <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
   <div>
-    <h4 class="mb-3 mb-md-0">{{isset($lista)?'Editar Lista de Ganancia':'Nueva Lista de Ganancia'}}</h4>
+    <h4 class="mb-3 mb-md-0">{{isset($listaGanancia)?'Editar Lista Ganancia':'Nueva Lista Ganancia'}}</h4>
   </div>
   <div class="d-flex align-items-center flex-wrap text-nowrap">
-    <a href="{{url('lista/index')}}" class="menu-icon">
+    <a href="{{url('listaganancia/index')}}" class="menu-icon">
       <i class="mdi mdi-backburger"></i>
     </a>
   </div>
@@ -21,19 +21,19 @@
 
         <h6 class="card-title"></h6>
 
-        <form id="formularioLista"method="POST" action="{{isset($lista)?'update':'store'}}">
+        <form id="formularioLista"method="POST" action="{{isset($listaGanancia)?'update':'store'}}">
           @csrf
           <div class="mb-3">
             <label for="nombre" class="form-label required">Nombre</label>
             <input type="text" class="form-control" name="nombre" id="nombre" autocomplete="off"
-              value="{{ isset($lista)?$lista->nombre : '' }}" placeholder="Ingrese un nombre de lista..." required>
+              value="{{ isset($listaGanancia)?$listaGanancia->nombre : '' }}" placeholder="Ingrese un nombre de lista..." required>
           </div>
           <div class="mb-3">
-            <label for="valor" class="form-label required">Valor</label>
-            <input type="number" class="form-control" name="valor" id="valor" autocomplete="off"
-              value="{{ isset($lista)?$lista->valor : '' }}" placeholder="Ingrese un valor % ..." required>
+            <label for="ganancia" class="form-label required">Ganancia</label>
+            <input type="number" class="form-control" name="ganancia" id="ganancia" autocomplete="off"
+              value="{{ isset($listaGanancia)?$listaGanancia->ganancia : '' }}" placeholder="Ingrese un valor % ..." required>
           </div>
-          <button type="submit" class="btn btn-primary me-2">{{isset($lista)?'Guardar':'Crear'}}</button>
+          <button type="submit" class="btn btn-primary me-2">{{isset($listaGanancia)?'Guardar':'Crear'}}</button>
           <button type="button" class="btn btn-secondary me-2" id="cancelButton">Cancelar</button>
         </form>
 

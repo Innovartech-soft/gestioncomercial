@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Lista extends Model
 {
     use HasFactory;
-    protected $table = "listas";
+    protected $table = "listas_descuento";
 
     protected $fillable = [
         'id',

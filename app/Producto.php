@@ -91,6 +91,7 @@ class Producto extends Model
         'id_rubro',
         'id_marca',
         'id_proveedor',
+        'id_lista_ganancia',
         'notas',
         'deleted_at',
         'oferta_fecha_desde',
@@ -119,6 +120,11 @@ class Producto extends Model
     public function proveedor(): BelongsTo
     {
         return $this->belongsTo(Proveedor::class,'id_proveedor');
+    }
+
+    public function listaGanancia()
+    {
+        return $this->belongsTo(ListaGanancia::class,'id_lista_ganancia');
     }
 
     public function getTipoIva(){

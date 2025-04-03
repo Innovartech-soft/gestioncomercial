@@ -40,7 +40,7 @@
             <input type="number" class="form-control" id="cuit" value="{{isset($proveedor)?$proveedor->cuit:''}}"
               name="cuit" placeholder="Ingrese un CUIT...">
           </div>
-          <div class="mb-6">
+          <div class="mb-3">
             <label class="form-label">Contacto</label>
             <input class="form-control mb-4 mb-md-0" value="{{isset($proveedor)?$proveedor->contacto:''}}"
               name="contacto" placeholder="Ingrese un contacto...." />
