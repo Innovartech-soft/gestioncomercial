@@ -9,13 +9,13 @@
         <div class="row">
           <div class="col-md-4 pe-md-0">
             <div class="auth-side-wrapper">
-              <img style="height: 452px; width: 180px;"
-                src="{{ url('assets/images/ventas_hereled_banner_vertical.png') }}" alt="">
+              <img style="height: 452px; width: 299px;"
+                src="{{ url('assets/images/banner_vertical.png') }}" alt="">
             </div>
           </div>
           <div class="col-md-8 ps-md-0">
             <div class="auth-form-wrapper px-4 py-5">
-              <a href="#" class="noble-ui-logo d-block mb-2">BIENVENIDO<span> Hereled</span></a>
+              <a href="#" class="noble-ui-logo d-block mb-2">BIENVENIDO<span></span></a>
               <form class="forms-sample" method="POST" action="login">
                 @csrf
                 <div class="mb-3">

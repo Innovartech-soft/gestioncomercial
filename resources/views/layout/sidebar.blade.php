@@ -4,7 +4,7 @@
       Hereled<span></span>
     </a> --}}
     <a href="#" class="sidebar-brand">
-      <img src="{{ url('assets/images/Logo_hereled.png') }}" alt="logo" width="80%" height="5%">
+      <img src="{{ url('assets/images/logoheader.png') }}" alt="logo" width="80%" height="5%">
     </a>
     <div class="sidebar-toggler not-active">
       <span></span>
