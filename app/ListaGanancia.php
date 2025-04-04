@@ -13,7 +13,7 @@ class ListaGanancia extends Model
     protected $fillable = [
         'id',
         'nombre',
-        'ganancia'
+        'ganancia',
     ];
 
     // Definir la relación con los productos

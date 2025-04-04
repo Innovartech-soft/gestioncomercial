@@ -122,17 +122,30 @@
                 </div>
 
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-2">
                   <label for="precio_costo" class="form-label required">Precio Costo</label>
                   <input type="number" step="any" min="0" class="form-control" name="precio_costo" id="precio_costo"
                     value="{{isset($producto)?$producto->precio_costo:''}}" autocomplete="off" placeholder="Precio costo..." required>
                 </div>
-                {{-- esta hidden para no tocar los controllers que tienen un $model->update() y no tener que tocas eso  --}}
-
-                  <input type="number" step="any" min="0" class="form-control" hidden name="precio_venta" id="precio_venta"
+                <div class="col-sm-2">
+                  <label for="lista" class="form-label required">Lista Ganancia</label>
+                  <select class="form-select" name="id_lista_ganancia" required>
+                      @foreach ($listas as $lista )
+                        @if(isset($producto))
+                          <option id="id_lista_ganancia" {{$producto->id_lista_ganancia==$lista->id?"selected":""}} value="{{$lista->nombre}}">{{$lista->ganancia}} %</option>
+                        @else
+                          <option id="id_lista_ganancia" value="{{$lista->nombre}}">{{$lista->ganancia}} %</option>
+                        @endif
+                      @endforeach
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                  <label for="precio_venta" class="form-label required">Precio Venta</label>
+                  <input type="number" step="any" min="0" class="form-control" name="precio_venta" id="precio_venta"
                     value="{{isset($producto)?$producto->precio_venta:''}}" autocomplete="off" placeholder="Precio venta..." >
                 {{--  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  --}}
-                    <div class="col-sm-6">
+                </div>
+                <div class="col-sm-2">
                   <label for="tipo_iva" class="form-label required">IVA</label>
                   <select class="form-select" name="tipo_iva" required>
                       @foreach ($ivas as $ivaIndex=>$ivaValor )
@@ -143,6 +156,12 @@
                         @endif
                       @endforeach
                     </select>
+                </div>
+                <div class="col-sm-3">
+                  <label for="precio_venta_iva" class="form-label required">Precio Venta c/IVA</label>
+                  <input type="number" step="any" min="0" class="form-control" name="precio_venta_iva" id="precio_venta_iva"
+                    value="{{isset($producto)?$producto->precio_venta:''}}" autocomplete="off" placeholder="Precio venta..." readonly>
+                {{--  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  --}}
                 </div>
               </div>
               <div class="form-check form-switch mb-3">
@@ -253,6 +272,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.js"></script>
   <script>
       $(document).ready(function() {
+        // INICIO SCRIPT OFERTA
           const enOfertaCheckbox = $('#en_oferta');
           const fechaDesdeInput = $('input[name="oferta_fecha_desde"]');
           const fechaHastaInput = $('input[name="oferta_fecha_hasta"]');
@@ -296,7 +316,60 @@
                   $(this).prop('required', false);
               }
           });
+          // FIN SCRIPT OFERTA
+
+
       });
+      
+      //INICIO SCRIPT PRECIO
+      let precioVentaEditado = false; // Bandera para detectar edición manual
+
+function calcularPrecioVenta() {
+    let precioCosto = parseFloat($('#precio_costo').val()) || 0;
+    let gananciaStr = $('select[name="id_lista_ganancia"] option:selected').text();
+    let ganancia = parseFloat(gananciaStr.replace('%', '').trim()) || 0;
+
+    if (!precioVentaEditado) {
+        let precioVenta = precioCosto * (1 + ganancia / 100);
+        $('#precio_venta').val(precioVenta.toFixed(2));
+    }
+
+    calcularPrecioVentaIva(); // Recalcular el precio con IVA
+}
+
+function calcularPrecioVentaIva() {
+    let precioVenta = parseFloat($('#precio_venta').val()) || 0;
+    let ivaStr = $('select[name="tipo_iva"] option:selected').text();
+    let iva = parseFloat(ivaStr.replace('%', '').trim()) || 0;
+
+    let precioVentaIva = precioVenta * (1 + iva / 100);
+    $('#precio_venta_iva').val(precioVentaIva.toFixed(2));
+  }
+
+    // Detectar cuando el usuario modifica manualmente el precio de venta
+    $('#precio_venta').on('input', function () {
+        precioVentaEditado = true;
+        calcularPrecioVentaIva(); // Solo actualiza el precio con IVA
+    });
+
+    // Si cambia el precio de costo o la ganancia, recalcular (pero sin sobrescribir el precio de venta si fue editado)
+    $('#precio_costo').on('input', function () {
+        precioVentaEditado = false; // Resetear la edición manual
+        calcularPrecioVenta();
+    });
+
+    $('select[name="id_lista_ganancia"]').on('change', function () {
+        precioVentaEditado = false; // Resetear la edición manual
+        calcularPrecioVenta();
+    });
+
+    // Si cambia el IVA, solo recalculamos el precio con IVA sin tocar el precio de venta
+    $('select[name="tipo_iva"]').on('change', calcularPrecioVentaIva);
+
+    // Ejecutar una vez al cargar la página
+    calcularPrecioVenta();
+
+  //FIN SCRIPT PRECIO
   </script>
 
 @endpush
