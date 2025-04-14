@@ -132,9 +132,9 @@
                   <select class="form-select" name="id_lista_ganancia" required>
                       @foreach ($listas as $lista )
                         @if(isset($producto))
-                          <option id="id_lista_ganancia" {{$producto->id_lista_ganancia==$lista->id?"selected":""}} value="{{$lista->nombre}}">{{$lista->ganancia}} %</option>
+                          <option id="id_lista_ganancia" {{$producto->id_lista_ganancia==$lista->id?"selected":""}} value="{{$lista->id}}">{{$lista->ganancia}} %</option>
                         @else
-                          <option id="id_lista_ganancia" value="{{$lista->nombre}}">{{$lista->ganancia}} %</option>
+                          <option id="id_lista_ganancia" value="{{$lista->id}}">{{$lista->ganancia}} %</option>
                         @endif
                       @endforeach
                     </select>
@@ -271,105 +271,105 @@
   <script src="{{ asset('assets/js/tags-input.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.js"></script>
   <script>
-      $(document).ready(function() {
-        // INICIO SCRIPT OFERTA
-          const enOfertaCheckbox = $('#en_oferta');
-          const fechaDesdeInput = $('input[name="oferta_fecha_desde"]');
-          const fechaHastaInput = $('input[name="oferta_fecha_hasta"]');
-          const precioOfertaInput = $('#precio_costo_oferta');
+  $(document).ready(function() {
+    // INICIO SCRIPT OFERTA
+      const enOfertaCheckbox = $('#en_oferta');
+      const fechaDesdeInput = $('input[name="oferta_fecha_desde"]');
+      const fechaHastaInput = $('input[name="oferta_fecha_hasta"]');
+      const precioOfertaInput = $('#precio_costo_oferta');
 
-          // Función para habilitar o deshabilitar los campos de fecha y precio de oferta según el estado del checkbox
-          function toggleCamposOferta() {
-              const estadoOferta = enOfertaCheckbox.prop('checked');
-              fechaDesdeInput.prop('disabled', !estadoOferta);
-              fechaHastaInput.prop('disabled', !estadoOferta);
-              precioOfertaInput.prop('disabled', !estadoOferta);
-              // Si la oferta está activada, establecer los atributos "required" en los campos de fecha y precio de oferta
-              if (estadoOferta) {
-                  fechaDesdeInput.prop('required', true);
-                  fechaHastaInput.prop('required', true);
-                  precioOfertaInput.prop('required', true);
-              } else {
-                  // Si la oferta está desactivada, eliminar los atributos de validación "required"
-                  fechaDesdeInput.prop('required', false);
-                  fechaHastaInput.prop('required', false);
-                  // Si el campo precio de oferta está vacío, eliminar el atributo de validación "required"
-                  if (!precioOfertaInput.val()) {
-                      precioOfertaInput.prop('required', false);
-                  }
+      // Función para habilitar o deshabilitar los campos de fecha y precio de oferta según el estado del checkbox
+      function toggleCamposOferta() {
+          const estadoOferta = enOfertaCheckbox.prop('checked');
+          fechaDesdeInput.prop('disabled', !estadoOferta);
+          fechaHastaInput.prop('disabled', !estadoOferta);
+          precioOfertaInput.prop('disabled', !estadoOferta);
+          // Si la oferta está activada, establecer los atributos "required" en los campos de fecha y precio de oferta
+          if (estadoOferta) {
+              fechaDesdeInput.prop('required', true);
+              fechaHastaInput.prop('required', true);
+              precioOfertaInput.prop('required', true);
+          } else {
+              // Si la oferta está desactivada, eliminar los atributos de validación "required"
+              fechaDesdeInput.prop('required', false);
+              fechaHastaInput.prop('required', false);
+              // Si el campo precio de oferta está vacío, eliminar el atributo de validación "required"
+              if (!precioOfertaInput.val()) {
+                  precioOfertaInput.prop('required', false);
               }
           }
+      }
 
-          // Llama a la función al cargar la página para establecer el estado inicial
-          toggleCamposOferta();
+      // Llama a la función al cargar la página para establecer el estado inicial
+      toggleCamposOferta();
 
-          // Agrega un evento change al checkbox para que los campos se activen o desactiven según sea necesario
-          enOfertaCheckbox.on('change', toggleCamposOferta);
+      // Agrega un evento change al checkbox para que los campos se activen o desactiven según sea necesario
+      enOfertaCheckbox.on('change', toggleCamposOferta);
 
-          // Agrega un evento input al campo de precio de oferta para actualizar el atributo "required"
-          precioOfertaInput.on('input', function() {
-              // Si el campo precio de oferta tiene un valor, establecer el atributo "required"
-              if ($(this).val()) {
-                  $(this).prop('required', true);
-              } else {
-                  // Si el campo precio de oferta está vacío, eliminar el atributo "required"
-                  $(this).prop('required', false);
-              }
-          });
-          // FIN SCRIPT OFERTA
-
-
+      // Agrega un evento input al campo de precio de oferta para actualizar el atributo "required"
+      precioOfertaInput.on('input', function() {
+          // Si el campo precio de oferta tiene un valor, establecer el atributo "required"
+          if ($(this).val()) {
+              $(this).prop('required', true);
+          } else {
+              // Si el campo precio de oferta está vacío, eliminar el atributo "required"
+              $(this).prop('required', false);
+          }
       });
-      
-      //INICIO SCRIPT PRECIO
-      let precioVentaEditado = false; // Bandera para detectar edición manual
+      // FIN SCRIPT OFERTA
 
-function calcularPrecioVenta() {
-    let precioCosto = parseFloat($('#precio_costo').val()) || 0;
-    let gananciaStr = $('select[name="id_lista_ganancia"] option:selected').text();
-    let ganancia = parseFloat(gananciaStr.replace('%', '').trim()) || 0;
 
-    if (!precioVentaEditado) {
-        let precioVenta = precioCosto * (1 + ganancia / 100);
-        $('#precio_venta').val(precioVenta.toFixed(2));
-    }
+  });
+  
+  //INICIO SCRIPT PRECIO
+  let precioVentaEditado = false; // Bandera para detectar edición manual
 
-    calcularPrecioVentaIva(); // Recalcular el precio con IVA
-}
+  function calcularPrecioVenta() {
+      let precioCosto = parseFloat($('#precio_costo').val()) || 0;
+      let gananciaStr = $('select[name="id_lista_ganancia"] option:selected').text();
+      let ganancia = parseFloat(gananciaStr.replace('%', '').trim()) || 0;
 
-function calcularPrecioVentaIva() {
-    let precioVenta = parseFloat($('#precio_venta').val()) || 0;
-    let ivaStr = $('select[name="tipo_iva"] option:selected').text();
-    let iva = parseFloat(ivaStr.replace('%', '').trim()) || 0;
+      if (!precioVentaEditado) {
+          let precioVenta = precioCosto * (1 + ganancia / 100);
+          $('#precio_venta').val(precioVenta.toFixed(2));
+      }
 
-    let precioVentaIva = precioVenta * (1 + iva / 100);
-    $('#precio_venta_iva').val(precioVentaIva.toFixed(2));
+      calcularPrecioVentaIva(); // Recalcular el precio con IVA
   }
 
-    // Detectar cuando el usuario modifica manualmente el precio de venta
-    $('#precio_venta').on('input', function () {
-        precioVentaEditado = true;
-        calcularPrecioVentaIva(); // Solo actualiza el precio con IVA
-    });
+  function calcularPrecioVentaIva() {
+      let precioVenta = parseFloat($('#precio_venta').val()) || 0;
+      let ivaStr = $('select[name="tipo_iva"] option:selected').text();
+      let iva = parseFloat(ivaStr.replace('%', '').trim()) || 0;
 
-    // Si cambia el precio de costo o la ganancia, recalcular (pero sin sobrescribir el precio de venta si fue editado)
-    $('#precio_costo').on('input', function () {
-        precioVentaEditado = false; // Resetear la edición manual
-        calcularPrecioVenta();
-    });
+      let precioVentaIva = precioVenta * (1 + iva / 100);
+      $('#precio_venta_iva').val(precioVentaIva.toFixed(2));
+    }
 
-    $('select[name="id_lista_ganancia"]').on('change', function () {
-        precioVentaEditado = false; // Resetear la edición manual
-        calcularPrecioVenta();
-    });
+      // Detectar cuando el usuario modifica manualmente el precio de venta
+      $('#precio_venta').on('input', function () {
+          precioVentaEditado = true;
+          calcularPrecioVentaIva(); // Solo actualiza el precio con IVA
+      });
 
-    // Si cambia el IVA, solo recalculamos el precio con IVA sin tocar el precio de venta
-    $('select[name="tipo_iva"]').on('change', calcularPrecioVentaIva);
+      // Si cambia el precio de costo o la ganancia, recalcular (pero sin sobrescribir el precio de venta si fue editado)
+      $('#precio_costo').on('input', function () {
+          precioVentaEditado = false; // Resetear la edición manual
+          calcularPrecioVenta();
+      });
 
-    // Ejecutar una vez al cargar la página
-    calcularPrecioVenta();
+      $('select[name="id_lista_ganancia"]').on('change', function () {
+          precioVentaEditado = false; // Resetear la edición manual
+          calcularPrecioVenta();
+      });
 
-  //FIN SCRIPT PRECIO
+      // Si cambia el IVA, solo recalculamos el precio con IVA sin tocar el precio de venta
+      $('select[name="tipo_iva"]').on('change', calcularPrecioVentaIva);
+
+      // Ejecutar una vez al cargar la página
+      calcularPrecioVenta();
+
+    //FIN SCRIPT PRECIO
   </script>
 
 @endpush

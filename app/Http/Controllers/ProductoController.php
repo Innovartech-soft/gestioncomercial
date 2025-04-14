@@ -108,10 +108,11 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($id);
         $rubros = Rubro::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $marcas = Marca::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
+        $listas = ListaGanancia::all();
         $proveedores = Proveedor::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $ivas = Producto::TIPO_IVA;
 
-        return view('pages.producto.form',compact('rubros','marcas','proveedores','producto','ivas'));
+        return view('pages.producto.form',compact('rubros','marcas','proveedores','producto','ivas','listas'));
     }
 
     public function update(Request $request, $id)

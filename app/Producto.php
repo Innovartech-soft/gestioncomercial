@@ -135,6 +135,9 @@ class Producto extends Model
         return $this->hasMany(DetalleVenta::class,'id_producto');
     }
 
+    /* 
+    PRECIO DE COSTO
+
     public function getPrecioConIVA(){
         if($this->tipo_iva!=1)
             return round($this->precio_costo + (($this->precio_costo*$this->getTipoIva())/100),1);
@@ -163,6 +166,43 @@ class Producto extends Model
         return $this->getPrecioPesosConIva();
     }
 
+    */
+    public function getPrecioCostoEnPesos() {
+
+        return round(($this->es_dolar == 1 ? $this->param->dolar * $this->precio_costo : $this->precio_costo),1);
+    }
+
+    public function getPrecioConIVA(){
+        if($this->tipo_iva!=1)
+            return round($this->precio_venta + (($this->precio_venta*$this->getTipoIva())/100),1);
+        else
+            return round($this->precio_venta,1);
+    }
+
+    public function getPrecioEnPesos() {
+
+        return round(($this->es_dolar == 1 ? $this->param->dolar * $this->precio_venta : $this->precio_venta),1);
+    }
+
+    public function getPrecioPesosConIva(){
+
+        $precioPesos = ($this->es_dolar == 1 ? $this->param->dolar * $this->precio_venta : $this->precio_venta);
+
+        if($this->tipo_iva!=1)
+            return round($precioPesos + (($precioPesos*$this->getTipoIva())/100),1);
+        else
+            return round($precioPesos,1);
+    }
+
+    public function getPrecioPesosCostoAttribute()
+    {
+        return $this->getPrecioCostoEnPesos();
+    }
+
+    public function getPrecioPesosConIvaAttribute()
+    {
+        return $this->getPrecioPesosConIva();
+    }
     /**
      * Genera un nuevo código tomando como referencia el ID del ultimo producto existente y el acronimo del rubro informado por parametro
      *
