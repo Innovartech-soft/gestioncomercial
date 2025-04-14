@@ -42,10 +42,11 @@
                   <th style="display:none">Codigo</th>
                   <th style="display:none">Codigo Barras</th>
                   <th>Nombre</th>
-                  <th>Costo Final $</th>
+                  <th>Precio V. Final</th>
                   <th>IVA</th>
                   <th>Stock</th>
                   <th style="display:none">Oferta</th>
+                  <th>Precio Costo</th>
                   <th style="display:none">Rubro</th>
                   <th style="display:none">Marca</th>
                   <th style="display:none">Proveedor</th>
@@ -68,6 +69,7 @@
                   <td>{{ (!is_numeric($producto->getTipoIva())?$producto->getTipoIva():$producto->getTipoIva().'%')}}
                   </td>
                   <td>{{ $producto->stock}}</td>
+                  <td>$ {{$producto->precio_pesos_costo}}</td>
                   <td style="display:none">{{ $producto->isOffer()?'oferta':''}}</td>
                   <td style="display:none">{{ optional($producto->rubro)->nombre}}</td>
                   <td style="display:none">{{ optional($producto->marca)->nombre}}</td>
