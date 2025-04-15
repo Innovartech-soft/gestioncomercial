@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->float('ganancia');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
