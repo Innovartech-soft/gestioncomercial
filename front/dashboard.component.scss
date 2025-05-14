@@ -1,0 +1,42 @@
+.dataRow {
+  background-color: rgb(112, 111, 111);
+}
+
+.blueGrayBG {
+  background-color: #1a348a;
+}
+
+.bodyGrayBG {
+  background-color: #e8eaeb; padding: 5px;
+}
+
+.close-icon {
+  transform: scale(1.2); /* Hace que el icono sea un 20% más grande en hover */
+}
+
+.grayed {
+  color: rgb(112, 111, 111);
+}
+
+.btn-print {
+  background-color: #7987a1;
+  color: white;
+}
+
+.btn-print:hover {
+  background-color: #677389;
+}
+
+.warning {
+  background-color: #de7d16;
+  color: white;
+  height: 2rem;
+  font-weight: bold;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 0rem;
+  margin-right: 0rem;
+  display: flex;
+  align-items: center;
+  border-radius: 0.2rem;
+}

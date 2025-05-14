@@ -32,65 +32,70 @@
         <div class="collapse {{ show_class(['Venta/*']) }}" id="Venta">
           <ul class="nav sub-menu">
             <li class="nav-item">
-              <a href="#" class="nav-link"
-                onclick="setCookieAndOpenLink(event, '{{Config::get('app.cors_allow_origin')}}')">Gestión de Venta</a>
+              <a href="{{ url('venta/gestionVentas') }}"
+                class="nav-link {{ active_class(['venta/gestionVentas']) }}">Gestion de
+                ventas</a>
             </li>
             <li class="nav-item">
               <a href="{{ url('venta/index') }}" class="nav-link {{ active_class(['venta/index']) }}">Listado de
                 Ventas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexCerradas') }}" class="nav-link {{ active_class(['venta/indexCerradas']) }}">Listado de Cerradas</a>
+              <a href="{{ url('venta/indexCerradas') }}"
+                class="nav-link {{ active_class(['venta/indexCerradas']) }}">Listado de Cerradas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexAnuladas') }}" class="nav-link {{ active_class(['venta/indexAnuladas']) }}">Listado de Anuladas</a>
+              <a href="{{ url('venta/indexAnuladas') }}"
+                class="nav-link {{ active_class(['venta/indexAnuladas']) }}">Listado de Anuladas</a>
             </li>
           </ul>
         </div>
       </li>
-        <li class="nav-item nav-category">Cuenta Corriente</li>
-        <li class="nav-item {{ active_class(['cuentaCorriente/*']) }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#cuentaCorriente" role="button"
-               aria-expanded="{{ is_active_route(['cuentacorriente/*']) }}" aria-controls="auth">
-                <i class="link-icon" data-feather="trending-up"></i>
-                <span class="link-title"> Cuenta Corriente</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse {{ show_class(['cuentaCorriente/*']) }}" id="cuentaCorriente">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                        <a href="{{ url('cuentacorriente/index') }}"
-                           class="nav-link {{ active_class(['cuentacorriente/index']) }}">Movimientos de C.Corriente</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('recibo/index') }}" class="nav-link {{ active_class(['recibo/index']) }}">Listado de
-                            Recibos</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-{{--        <li class="nav-item nav-category">Clientes</li>--}}
-{{--        <li class="nav-item {{ active_class(['cliente/*']) }}">--}}
-{{--            <a class="nav-link" data-bs-toggle="collapse" href="#cliente" role="button"--}}
-{{--               aria-expanded="{{ is_active_route(['cliente/*']) }}" aria-controls="auth">--}}
-{{--                <i class="link-icon" data-feather="user-plus"></i>--}}
-{{--                <span class="link-title"> Clientes</span>--}}
-{{--                <i class="link-arrow" data-feather="chevron-down"></i>--}}
-{{--            </a>--}}
-{{--            <div class="collapse {{ show_class(['cliente/*']) }}" id="cliente">--}}
-{{--                <ul class="nav sub-menu">--}}
-{{--                    <li class="nav-item">--}}
-{{--                        <a href="{{ url('cliente/index') }}" class="nav-link {{ active_class(['cliente/login']) }}">Listado de--}}
-{{--                            Clientes</a>--}}
-{{--                    </li>--}}
-{{--                    <li class="nav-item">--}}
-{{--                        <a href="{{ url('cliente/create') }}" class="nav-link {{ active_class(['cliente/register']) }}">Alta de--}}
-{{--                            Cliente</a>--}}
-{{--                    </li>--}}
+      <li class="nav-item nav-category">Cuenta Corriente</li>
+      <li class="nav-item {{ active_class(['cuentaCorriente/*']) }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#cuentaCorriente" role="button"
+          aria-expanded="{{ is_active_route(['cuentacorriente/*']) }}" aria-controls="auth">
+          <i class="link-icon" data-feather="trending-up"></i>
+          <span class="link-title"> Cuenta Corriente</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse {{ show_class(['cuentaCorriente/*']) }}" id="cuentaCorriente">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a href="{{ url('cuentacorriente/index') }}"
+                class="nav-link {{ active_class(['cuentacorriente/index']) }}">Movimientos de C.Corriente</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url('recibo/index') }}" class="nav-link {{ active_class(['recibo/index']) }}">Listado de
+                Recibos</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      {{-- <li class="nav-item nav-category">Clientes</li>--}}
+      {{-- <li class="nav-item {{ active_class(['cliente/*']) }}">--}}
+        {{-- <a class="nav-link" data-bs-toggle="collapse" href="#cliente" role="button" --}} {{--
+          aria-expanded="{{ is_active_route(['cliente/*']) }}" aria-controls="auth">--}}
+          {{-- <i class="link-icon" data-feather="user-plus"></i>--}}
+          {{-- <span class="link-title"> Clientes</span>--}}
+          {{-- <i class="link-arrow" data-feather="chevron-down"></i>--}}
+          {{-- </a>--}}
+        {{-- <div class="collapse {{ show_class(['cliente/*']) }}" id="cliente">--}}
+          {{-- <ul class="nav sub-menu">--}}
+            {{-- <li class="nav-item">--}}
+              {{-- <a href="{{ url('cliente/index') }}" class="nav-link {{ active_class(['cliente/login']) }}">Listado
+                de--}}
+                {{-- Clientes</a>--}}
+              {{-- </li>--}}
+            {{-- <li class="nav-item">--}}
+              {{-- <a href="{{ url('cliente/create') }}" class="nav-link {{ active_class(['cliente/register']) }}">Alta
+                de--}}
+                {{-- Cliente</a>--}}
+              {{-- </li>--}}
 
-{{--                </ul>--}}
-{{--            </div>--}}
-{{--        </li>--}}
+            {{-- </ul>--}}
+          {{-- </div>--}}
+        {{-- </li>--}}
 
       <li class="nav-item nav-category">Cheques</li>
       <li class="nav-item {{ active_class(['cheques/*']) }}">
@@ -187,11 +192,13 @@
         <div class="collapse {{ show_class(['listaganancia/*']) }}" id="listaGanancia">
           <ul class="nav sub-menu">
             <li class="nav-item">
-              <a href="{{ url('listaganancia/index') }}" class="nav-link {{ active_class(['listaganancia/login']) }}">Listado de
+              <a href="{{ url('listaganancia/index') }}"
+                class="nav-link {{ active_class(['listaganancia/login']) }}">Listado de
                 Listas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('listaganancia/create') }}" class="nav-link {{ active_class(['listaganancia/register']) }}">Alta de
+              <a href="{{ url('listaganancia/create') }}"
+                class="nav-link {{ active_class(['listaganancia/register']) }}">Alta de
                 Lista</a>
             </li>
           </ul>
@@ -304,23 +311,23 @@
           </ul>
         </div>
       </li>
-        <li class="nav-item nav-category">Caja Diaria</li>
-        <li class="nav-item {{ active_class(['/*']) }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#cajadiaria" role="button"
-               aria-expanded="{{ is_active_route(['cajadiaria/*']) }}" aria-controls="auth">
-                <i class="link-icon" data-feather="dollar-sign"></i>
-                <span class="link-title"> Caja Diaria</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse {{ show_class(['cajadiaria/*']) }}" id="cajadiaria">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                        <a href="{{ url('cajadiaria/index') }}"
-                           class="nav-link {{ active_class(['cajadiaria/index']) }}">Detalles Historico Caja</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+      <li class="nav-item nav-category">Caja Diaria</li>
+      <li class="nav-item {{ active_class(['/*']) }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#cajadiaria" role="button"
+          aria-expanded="{{ is_active_route(['cajadiaria/*']) }}" aria-controls="auth">
+          <i class="link-icon" data-feather="dollar-sign"></i>
+          <span class="link-title"> Caja Diaria</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse {{ show_class(['cajadiaria/*']) }}" id="cajadiaria">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a href="{{ url('cajadiaria/index') }}" class="nav-link {{ active_class(['cajadiaria/index']) }}">Detalles
+                Historico Caja</a>
+            </li>
+          </ul>
+        </div>
+      </li>
       <li class="nav-item nav-category">Parametros del Sistema</li>
       <li class="nav-item {{ active_class(['parametros/*']) }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#parametros" role="button"
@@ -342,7 +349,7 @@
     </ul>
   </div>
 </nav>
-<script>
+{{-- <script>
   var token = "{{ session('token') }}";
     // console.log('Valor del token:', token);
         function setCookieAndOpenLink(event, link) {
@@ -372,4 +379,4 @@
         // Abrir el enlace en una nueva pestaña con el token en la URL y en el encabezado de la solicitud
         window.open(urlWithToken, "_blank");
     }
-</script>
+</script> --}}

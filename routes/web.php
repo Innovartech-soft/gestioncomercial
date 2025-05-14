@@ -154,6 +154,7 @@ Route::group(['middleware'=>'auth'], function(){
     //Venta routes Start
     Route::group(['prefix' => 'venta'], function(){
         Route::get('index',[VentaController::class , 'index'])->name('venta.index');
+        Route::get('gestionVentas',[VentaController::class , 'gestionVenta'])->name('venta.gestionVenta');
         Route::get('indexCerradas',[VentaController::class , 'indexCerradas'])->name('venta.indexCerradas');
         Route::get('indexAnuladas',[VentaController::class , 'indexAnuladas'])->name('venta.indexAnuladas');
         Route::get('create',[VentaController::class , 'create'])->name('venta.create');

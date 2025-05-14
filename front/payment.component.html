@@ -1,0 +1,108 @@
+<div class="p-2">
+    <div class="card m-2 p2">
+        <div class="card-body">
+            <div class="row mb-4">
+                <label for="total" class="col-5 col-form-label paymentItem">Total operación:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control readonly" name="total" [(ngModel)]="totalOperacion" disabled
+                        type="number"/>
+                    </div>    
+                </div>
+            </div>
+            <div class="row mb-4" *ngIf="!editing && type == 3">
+                <label for="cash" class="col-5 col-form-label paymentItem">Efectivo:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control" name="cash" [(ngModel)]="payment.efectivo" 
+                        (change)="calculateTotal()" type="number" min="0" onkeypress="return event.charCode != 44"/>
+                    </div>    
+                </div>
+            </div>
+            <div class="row mb-4" *ngIf="!editing && type == 3">
+                <label for="card" class="col-5 col-form-label paymentItem">Tarjeta:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control" name="card" [(ngModel)]="payment.tarjeta" 
+                        (change)="calculateTotal()" type="number" min="0" onkeypress="return event.charCode != 44"/>
+                    </div>    
+                </div>
+            </div>
+            <div class="row mb-4" *ngIf="!editing && type == 3">
+                <label for="account" class="col-5 col-form-label paymentItem">Cuenta corriente:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control" name="account" [(ngModel)]="payment.cuentaCorriente"
+                        (change)="calculateTotal()" type="number" min="0" onkeypress="return event.charCode != 44"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4" *ngIf="!editing && type == 3">
+                <label for="check" class="col-5 col-form-label paymentItem">Cheque:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control readonly" name="check" [(ngModel)]="payment.cheque" 
+                        type="number" min="0" disabled [value]="someCheckWasSelected? sumaCheques : ''"/>
+                        <button type="button" class="btn btn-primary btn-icon" 
+                        placement="top" ngbTooltip="Seleccionar cheques" (click)="openChecksList(checksModal)">
+                            <i class="feather icon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4" *ngIf="!editing && type == 3">
+                <label for="other" class="col-5 col-form-label paymentItem">Otro:</label>
+                <div class="col-7">
+                    <div class="input-group">
+                        <button class="input-group-text" disabled type="button">
+                            <p>$</p>
+                        </button>
+                        <input class="form-control" name="other" [(ngModel)]="payment.otro" 
+                        (change)="calculateTotal()" type="number" min="0" onkeypress="return event.charCode != 44"/>
+                    </div>    
+                </div>
+            </div>
+            <div class="mb-4 d-flex justify-content-end" *ngIf="!editing && type == 3">
+                <span class="mx-2" style="font-weight: bold;">Total: </span> ${{total}}
+            </div>
+            <div class="row">
+                <label for="notes" class="col-form-label paymentItem">Notas:</label>
+                <textarea class="form-control" name="notes" [(ngModel)]="notes"  rows="3"></textarea>
+            </div>
+        </div>
+        
+      </div>
+</div>
+
+<ng-template #checksModal let-modal>
+    <div class="container" style="overflow-y: auto; overflow-x: hidden;">
+        <div class="pt-2">
+            <div class="modal-bg d-flex justify-content-between modal-header">
+                <h5 class="modal-title text-white" id="exampleModalLabel">Cheques</h5>
+                <button type="button" class="btn-close close-icon" (click)="modal.close('by: close icon')" aria-label="Cerrar"></button>
+            </div>
+        </div>
+      <div class="row px-0">
+        <app-checks [clientes]="clientes" [selectedClienteId]="selectedClienteId" #checks></app-checks>
+      </div>
+      <div class="d-flex justify-content-end mb-3 pt-4">
+        <button class="btn btn-primary mx-2" (click)="save(checksModal, checks)">Continuar</button>
+        <button class="btn btn-secondary" (click)="modal.close('by: close icon')">Cancelar</button>
+      </div>
+    </div>
+  </ng-template>
