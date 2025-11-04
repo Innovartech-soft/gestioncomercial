@@ -14,7 +14,7 @@ use App\Rubro;
 use App\Marca;
 use App\ProductoPrecioHistorico;
 use App\Proveedor;
-use App\Lista;
+use App\ListaGanancia;
 use DB;
 use App\Logs;
 use Illuminate\Support\Carbon;
@@ -25,7 +25,7 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = Producto::whereNull('deleted_at')->get();
-        $listas = Lista::whereNull('deleted_at')->get();
+        $listas = ListaGanancia::all();
         $rubros = Rubro::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $marcas = Marca::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $proveedores = Proveedor::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
@@ -73,7 +73,7 @@ class ProductoController extends Controller
     public function indexUpdate()
     {
         $productos = Producto::whereNull('deleted_at')->get();
-        $listas = Lista::whereNull('deleted_at')->get();
+        $listas = ListaGanancia::all();
         $rubros = Rubro::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $marcas = Marca::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $proveedores = Proveedor::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
@@ -84,10 +84,11 @@ class ProductoController extends Controller
     {
         $rubros = Rubro::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $marcas = Marca::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
+        $listas = ListaGanancia::all();
         $proveedores = Proveedor::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $ivas = Producto::TIPO_IVA;
 
-        return view('pages.producto.form',compact('rubros','marcas','proveedores','ivas'));
+        return view('pages.producto.form',compact('rubros','marcas','listas','proveedores','ivas'));
     }
 
     public function store(Request $request)
@@ -107,10 +108,11 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($id);
         $rubros = Rubro::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $marcas = Marca::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
+        $listas = ListaGanancia::all();
         $proveedores = Proveedor::whereNull('deleted_at')->orderBy('nombre','ASC')->get();
         $ivas = Producto::TIPO_IVA;
 
-        return view('pages.producto.form',compact('rubros','marcas','proveedores','producto','ivas'));
+        return view('pages.producto.form',compact('rubros','marcas','proveedores','producto','ivas','listas'));
     }
 
     public function update(Request $request, $id)

@@ -26,7 +26,7 @@ class ListaController extends Controller
             'valor' => $request->valor,
         ]);
         $this->registrarEnLog('success', $request->nombre);
-        return redirect()->route('lista.index')->with('success','La lista '.$request->nombre.' ha sido actualizada correctamente');
+        return redirect()->route('lista.index')->with('success','La lista '.$request->nombre.' ha sido creada correctamente');
     }
 
     public function destroy($id)
