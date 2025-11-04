@@ -84,6 +84,9 @@ License: For each use you must have a valid license purchased only from above li
   <!-- end common css -->
 
   @stack('style')
+
+  @livewireStyles
+
 </head>
 <body data-base-url="{{url('/')}}" class="sidebar-dark">
 
@@ -99,7 +102,7 @@ License: For each use you must have a valid license purchased only from above li
       @include('layout.footer')
     </div>
   </div>
-
+  @livewireScripts
     <!-- base js -->
 
     <script src="{{ asset('js/app.js') }}"></script>
@@ -118,7 +121,7 @@ License: For each use you must have a valid license purchased only from above li
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/l10n/es.js"></script>
 
     <!-- end common js -->
-
+    
     @stack('custom-scripts')
 </body>
 </html>

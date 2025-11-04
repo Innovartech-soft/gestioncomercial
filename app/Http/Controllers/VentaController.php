@@ -58,35 +58,11 @@ class VentaController extends Controller
     //     return view('pages.venta.gestionVenta');
     // }
 
-    public function gestionVenta(Request $request)
+    public function gestionVenta()
     {
-        // Cargar todos los datos necesarios para la vista
-        $tipos = \App\TipoVenta::all();
-        $listas = \App\Lista::all();
-        $vendedores = \App\Vendedor::where('estado', true)->get();
-        $clientes = \App\Cliente::all();
-        $marcas = \App\Marca::all();
-        $rubros = \App\Rubro::all();
-        $proveedores = \App\Proveedor::all();
-        $productos = \App\Producto::all();
-
-        // Formatear productos para mostrar nombre + código
-        foreach ($productos as $producto) {
-            $producto->nametoShow = $producto->nombre . ' - ' . ($producto->codigo ? $producto->codigo . ' - ' : '') . $producto->codigo_interno;
-        }
-
-        return view('pages.venta.gestionVenta', [
-            'tipos' => $tipos,
-            'listas' => $listas,
-            'vendedores' => $vendedores,
-            'clientes' => $clientes,
-            'marcas' => $marcas,
-            'rubros' => $rubros,
-            'proveedores' => $proveedores,
-            'productos' => $productos,
-            'todayDate' => now()->format('d/m/Y'),
-        ]);
+        return view('pages.venta.gestionVenta');
     }
+
 
     /**
      * Show the form for creating a new resource.
