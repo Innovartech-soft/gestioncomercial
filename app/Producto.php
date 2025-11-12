@@ -78,7 +78,7 @@ class Producto extends Model
         'nombre',
         'detalle',
         'codigo',
-        'codigo_barra',
+        'codigo_barras',
         'codigo_interno',
         'precio_costo',
         'es_dolar',

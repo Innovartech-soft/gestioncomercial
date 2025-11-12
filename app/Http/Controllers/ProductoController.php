@@ -97,7 +97,7 @@ class ProductoController extends Controller
         $request['es_dolar'] = ($request->es_dolar?1:0);
         $request['en_oferta'] = ($request->en_oferta?1:0);
         $request['no_comisionable'] = ($request->no_comisionable?1:0);
-
+        Log::alert('producto - store: ' . json_encode($request->all()));
         $producto = Producto::create($request->all());
         $this->registrarEnLog('success', $producto->nombre);
         return redirect()->route('producto.index')->with('success','El Producto '.$producto->nombre.' ha sido creado correctamente');
@@ -124,6 +124,7 @@ class ProductoController extends Controller
         if($producto->id_rubro != $request['id_rubro'] ){
             $request->merge(['codigo_interno'=>$producto->updateCodigoInterno($request['id_rubro'])]);
         }
+        Log::alert('producto - update: ' . json_encode($request->all()));
         $producto->update($request->all());
         $this->registrarEnLog('updated', $producto->nombre);
 

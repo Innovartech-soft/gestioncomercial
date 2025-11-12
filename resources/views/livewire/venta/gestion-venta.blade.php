@@ -2,7 +2,7 @@
 
     {{-- FILTROS SUPERIORES --}}
     <div class="row mb-4">
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Tipo de Comprobante</label>
             <select class="form-select" wire:model="tipoComprobante">
                 <option value="">Seleccione...</option>
@@ -12,12 +12,22 @@
             </select>
         </div>
 
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Cliente</label>
             <select class="form-select" wire:model="cliente">
                 <option value="">Seleccione...</option>
                 @foreach($clientes as $cliente)
                 <option value="{{ $cliente->id }}">{{ $cliente->razon_social ?? $cliente->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <label class="form-label fw-bold">Vendedor</label>
+            <select class="form-select" wire:model="vendedor">
+                <option value="">Seleccione...</option>
+                @foreach($vendedores as $vendedor)
+                    <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
                 @endforeach
             </select>
         </div>
@@ -57,17 +67,23 @@
                 </div>
             </div>
 
-            <input type="text" class="form-control mb-3" placeholder="Buscar producto..."
-                wire:model.live="buscador">
+            <input type="text" class="form-control mb-3" placeholder="🔎 Buscar por nombre o escanear código de barras…"
+            wire:model.live="buscador">
 
             <div class="border p-2" style="min-height:250px;">
                 <table class="table table-sm table-hover">
+                    <thead>
+                        <th>Nombre</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Stock</th>
+                    </thead>
                     <tbody>
                         @if($productos && $productos->count())
                             @foreach($productos as $producto)
                                 <tr wire:click="seleccionarProducto({{ $producto->id }})" style="cursor:pointer;">
                                     <td>{{ $producto->nombre }}</td>
-                                    <td class="text-end">${{ number_format($producto->precio,2) }}</td>
+                                    <td class="text-end">${{ number_format($producto->precio_pesos_con_iva,1) }}</td>
+                                    <td class="text-end">{{$producto->stock}}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -120,12 +136,35 @@
                 </tbody>
             </table>
 
-            <div class="d-flex justify-content-between fw-bold border-top pt-2">
-                <span>Total:</span>
-                <span>${{ number_format($this->calcularTotal(),2) }}</span>
+            {{-- ================== RESUMEN DE TOTALES ================== --}}
+            <div class="border-top mt-3 pt-3 small">
+                <div class="d-flex justify-content-between">
+                    <span>Subtotal (sin IVA):</span>
+                    <span class="fw-bold text-muted">
+                        ${{ number_format(collect($carrito)->sum('subtotal_sin_iva'), 2) }}
+                    </span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <span>IVA:</span>
+                    <span class="fw-bold text-muted">
+                        ${{ number_format(
+                            collect($carrito)->sum('subtotal_con_iva') - collect($carrito)->sum('subtotal_sin_iva'), 
+                            2
+                        ) }}
+                    </span>
+                </div>
+
+                <div class="d-flex justify-content-between fw-bold border-top pt-2 mt-2">
+                    <span>Total (con IVA):</span>
+                    <span class="text-success">
+                        ${{ number_format(collect($carrito)->sum('subtotal_con_iva'), 2) }}
+                    </span>
+                </div>
             </div>
 
-            <button class="btn btn-primary w-100 mt-3">
+            {{-- ================== BOTÓN DE GENERAR ================== --}}
+            <button class="btn btn-primary w-100 mt-3" wire:click="finalizarVenta">
                 Generar
             </button>
 

@@ -3,7 +3,6 @@
 namespace App\Livewire\Venta;
 
 use Livewire\Component;
-// Asegurate de usar el namespace correcto de tus modelos; si tus modelos están en App\Models, usar App\Models\...
 use App\Producto;
 use App\Cliente;
 use App\Vendedor;
@@ -33,6 +32,11 @@ class GestionVenta extends Component
     public $cantidad = 1;
     public $descuento = 0;
 
+    // Totales discriminados
+    public $subtotalSinIVA = 0;
+    public $totalIVA = 0;
+    public $totalConIVA = 0;
+
     protected $rules = [
         'cantidad' => 'integer|min:1',
         'descuento' => 'numeric|min:0'
@@ -46,87 +50,63 @@ class GestionVenta extends Component
         $this->marcas = Marca::all();
         $this->rubros = Rubro::all();
         $this->proveedores = Proveedor::all();
-
-        // inicializar productos vacía para que la vista no muestre null
         $this->productos = collect();
     }
 
-    // Livewire llama automáticamente updated{Property} cuando cambia la property
-    public function updatedBuscador($value)
+    public function updated($field)
     {
-        $this->buscarProductos();
+        if (in_array($field, ['buscador', 'filtroMarca', 'filtroProveedor', 'filtroRubro'])) {
+            $this->buscarProductos();
+        }
     }
 
-    public function updatedFiltroMarca($value)
+    public function getTotalConIVAProperty()
     {
-        $this->buscarProductos();
+        return collect($this->carrito)->sum('subtotal_con_iva');
     }
 
-    public function updatedFiltroProveedor($value)
-    {
-        $this->buscarProductos();
-    }
-
-    public function updatedFiltroRubro($value)
-    {
-        $this->buscarProductos();
-    }
 
     public function buscarProductos()
     {
-        // Si no hay nada en el buscador y no hay filtros, limpiamos resultados
         if (trim($this->buscador) === '' && !$this->filtroMarca && !$this->filtroProveedor && !$this->filtroRubro) {
             $this->productos = collect();
             return;
         }
 
+        $term = trim($this->buscador);
         $query = Producto::query();
 
-        // Buscador: buscar por nombre, codigo_interno o codigo
-        if ($this->buscador) {
-            $term = '%' . $this->buscador . '%';
-            $query->where(function($q) use ($term) {
-                $q->where('nombre', 'like', $term)
-                  ->orWhere('codigo_interno', 'like', $term)
-                  ->orWhere('codigo', 'like', $term);
+        if ($term) {
+            $query->where(function ($q) use ($term) {
+                $q->where('nombre', 'like', "%{$term}%")
+                    ->orWhere('codigo', 'like', "%{$term}%")
+                    ->orWhere('codigo_interno', 'like', "%{$term}%")
+                    ->orWhere('codigo_barras', $term);
             });
         }
 
-        // Filtros - tolerante a distintos nombres de columnas:
         if ($this->filtroMarca) {
-            // intenta con marca_id o id_marca
             if (SchemaHasColumn('productos', 'id_marca')) {
                 $query->where('id_marca', $this->filtroMarca);
-            } else {
-                // fallback: where relation (si existe relacion marca)
-                $query->whereHas('marca', function($q) {
-                    $q->where('id', $this->filtroMarca);
-                });
             }
         }
-
         if ($this->filtroProveedor) {
             if (SchemaHasColumn('productos', 'id_proveedor')) {
                 $query->where('id_proveedor', $this->filtroProveedor);
-            } else {
-                $query->whereHas('proveedor', function($q) {
-                    $q->where('id', $this->filtroProveedor);
-                });
             }
         }
-
         if ($this->filtroRubro) {
             if (SchemaHasColumn('productos', 'id_rubro')) {
                 $query->where('id_rubro', $this->filtroRubro);
-            } else {
-                $query->whereHas('rubro', function($q) {
-                    $q->where('id', $this->filtroRubro);
-                });
             }
         }
 
-        // Limitar resultados razonablemente (paginación/scroll infinito se puede añadir luego)
-        $this->productos = $query->orderBy('nombre')->limit(50)->get();
+        $this->productos = $query->orderBy('nombre')->limit(100)->get();
+
+        // Si el término coincide con código de barras, seleccionar automáticamente
+        if ($term && $this->productos->count() === 1 && $this->productos->first()->codigo_barras === $term) {
+            $this->seleccionarProducto($this->productos->first()->id);
+        }
     }
 
     public function seleccionarProducto($id)
@@ -138,47 +118,62 @@ class GestionVenta extends Component
 
     public function agregarCarrito()
     {
-        $this->validate();
+        if (!$this->productoSeleccionado) return;
 
-        if (!$this->productoSeleccionado) {
-            $this->dispatchBrowserEvent('notify', ['type' => 'error', 'message' => 'Seleccione un producto primero.']);
-            return;
-        }
+        // Precios base
+        $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
+        $precioSinIVA  = $this->productoSeleccionado->getPrecioEnPesos();
 
-        $precio = $this->productoSeleccionado->precio ?? $this->productoSeleccionado->precio_venta ?? 0;
-        $subtotal = $precio * $this->cantidad;
+        // Subtotales
+        $subtotalConIVA = $precioConIVA * $this->cantidad;
+        $subtotalSinIVA = $precioSinIVA * $this->cantidad;
+
+        // Aplicar descuento
         if ($this->descuento > 0) {
-            $subtotal -= ($subtotal * ($this->descuento / 100));
+            $factor = (1 - ($this->descuento / 100));
+            $subtotalConIVA *= $factor;
+            $subtotalSinIVA *= $factor;
         }
 
+        // Guardar en el carrito (incluimos 'subtotal' para compatibilidad)
         $this->carrito[] = [
             'id' => $this->productoSeleccionado->id,
             'nombre' => $this->productoSeleccionado->nombre,
-            'cantidad' => (int)$this->cantidad,
-            'precio' => (float)$precio,
-            'descuento' => (float)$this->descuento,
-            'subtotal' => round($subtotal, 2),
+            'precio' => $precioConIVA,
+            'precio_sin_iva' => $precioSinIVA,
+            'cantidad' => (int) $this->cantidad,
+            'descuento' => (float) $this->descuento,
+            'subtotal_con_iva' => round($subtotalConIVA, 2),
+            'subtotal_sin_iva' => round($subtotalSinIVA, 2),
+            'subtotal' => round($subtotalConIVA, 2), // clave compatibilidad usada por la vista antigua
         ];
 
-        // limpiar selección
+        // Limpiar selección
         $this->productoSeleccionado = null;
         $this->cantidad = 1;
         $this->descuento = 0;
 
-        $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Producto agregado al carrito.']);
+        // Recalcular totales generales
+        $this->actualizarTotales();
     }
 
     public function eliminarItem($index)
     {
-        if (isset($this->carrito[$index])) {
-            array_splice($this->carrito, $index, 1);
-            $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Item eliminado.']);
-        }
+        unset($this->carrito[$index]);
+        $this->carrito = array_values($this->carrito);
+        $this->actualizarTotales();
+    }
+
+    public function actualizarTotales()
+    {
+        $this->subtotalSinIVA = collect($this->carrito)->sum('subtotal_sin_iva');
+        $this->totalConIVA = collect($this->carrito)->sum('subtotal_con_iva');
+        $this->totalIVA = $this->totalConIVA - $this->subtotalSinIVA;
     }
 
     public function calcularTotal()
     {
-        return number_format(array_sum(array_column($this->carrito, 'subtotal')), 2, '.', '');
+        return $this->totalConIVA;
     }
 
     public function render()
@@ -189,10 +184,7 @@ class GestionVenta extends Component
     }
 }
 
-/**
- * Helper: comprobar rápidamente si la tabla tiene una columna (evita excepciones si no existe)
- * (lo definimos fuera de la clase para no depender de Schema facade en cada condicional)
- */
+// Helper fuera de la clase
 if (! function_exists('SchemaHasColumn')) {
     function SchemaHasColumn($table, $column) {
         try {
