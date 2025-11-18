@@ -120,21 +120,57 @@
             </button>
             @endif
 
-            <table class="table table-sm">
-                <tbody>
-                    @foreach($carrito as $index => $item)
-                    <tr>
-                        <td>{{ $item['nombre'] }}</td>
-                        <td>x{{ $item['cantidad'] }}</td>
-                        <td>${{ number_format($item['subtotal'],2) }}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm"
-                                wire:click="eliminarItem({{ $index }})">X</button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <table class="table table-sm align-middle">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th width="70">Cant.</th>
+            <th width="70">Desc %</th>
+            <th class="text-end" width="120">Subtotal</th>
+            <th width="40"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach($carrito as $index => $item)
+        <tr>
+            <td>{{ $item['nombre'] }}</td>
+
+            {{-- CAMPO CANTIDAD --}}
+            <td>
+                <input type="number"
+                    min="1"
+                    class="form-control form-control-sm"
+                    wire:model.lazy="carrito.{{ $index }}.cantidad"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+
+            {{-- CAMPO DESCUENTO --}}
+            <td>
+                <input type="number"
+                    min="0" max="100"
+                    class="form-control form-control-sm"
+                    wire:model.lazy="carrito.{{ $index }}.descuento"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+
+            {{-- SUBTOTAL --}}
+            <td class="text-end">
+                ${{ number_format($item['subtotal_con_iva'], 2) }}
+            </td>
+
+            {{-- ELIMINAR --}}
+            <td>
+                <button class="btn btn-danger btn-sm"
+                    wire:click="eliminarItem({{ $index }})">
+                    X
+                </button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
             {{-- ================== RESUMEN DE TOTALES ================== --}}
             <div class="border-top mt-3 pt-3 small">

@@ -117,27 +117,61 @@ class GestionVenta extends Component
     }
 
     public function agregarCarrito()
-    {
-        if (!$this->productoSeleccionado) return;
+{
+    if (!$this->productoSeleccionado) return;
 
-        // Precios base
-        $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
-        $precioSinIVA  = $this->productoSeleccionado->getPrecioEnPesos();
+    $idProd = $this->productoSeleccionado->id;
 
-        // Subtotales
+    // Precios base
+    $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
+    $precioSinIVA  = $this->productoSeleccionado->getPrecioEnPesos();
+
+    // Buscar si ya existe en el carrito
+    $index = collect($this->carrito)->search(fn($p) => $p['id'] === $idProd);
+
+    // ============================================================
+    //   CASO 1: EL PRODUCTO YA ESTÁ EN EL CARRITO → SUMAR CANTIDAD
+    // ============================================================
+    if ($index !== false) {
+
+        // Sumar cantidad
+        $this->carrito[$index]['cantidad'] += (int) $this->cantidad;
+
+        $cantidadTotal = $this->carrito[$index]['cantidad'];
+        $descuento = $this->carrito[$index]['descuento'];
+
+        // Recalcular totales
+        $subConIVA = $precioConIVA * $cantidadTotal;
+        $subSinIVA = $precioSinIVA * $cantidadTotal;
+
+        if ($descuento > 0) {
+            $factor = (1 - ($descuento / 100));
+            $subConIVA *= $factor;
+            $subSinIVA *= $factor;
+        }
+
+        // Actualizar carrito
+        $this->carrito[$index]['subtotal_con_iva'] = round($subConIVA, 2);
+        $this->carrito[$index]['subtotal_sin_iva'] = round($subSinIVA, 2);
+        $this->carrito[$index]['subtotal']         = round($subConIVA, 2); // compatibilidad
+
+    }
+    // ============================================================
+    //   CASO 2: PRODUCTO NUEVO → AÑADIRLO AL CARRITO
+    // ============================================================
+    else {
+
         $subtotalConIVA = $precioConIVA * $this->cantidad;
         $subtotalSinIVA = $precioSinIVA * $this->cantidad;
 
-        // Aplicar descuento
         if ($this->descuento > 0) {
             $factor = (1 - ($this->descuento / 100));
             $subtotalConIVA *= $factor;
             $subtotalSinIVA *= $factor;
         }
 
-        // Guardar en el carrito (incluimos 'subtotal' para compatibilidad)
         $this->carrito[] = [
-            'id' => $this->productoSeleccionado->id,
+            'id' => $idProd,
             'nombre' => $this->productoSeleccionado->nombre,
             'precio' => $precioConIVA,
             'precio_sin_iva' => $precioSinIVA,
@@ -145,17 +179,19 @@ class GestionVenta extends Component
             'descuento' => (float) $this->descuento,
             'subtotal_con_iva' => round($subtotalConIVA, 2),
             'subtotal_sin_iva' => round($subtotalSinIVA, 2),
-            'subtotal' => round($subtotalConIVA, 2), // clave compatibilidad usada por la vista antigua
+            'subtotal' => round($subtotalConIVA, 2), // compatibilidad
         ];
-
-        // Limpiar selección
-        $this->productoSeleccionado = null;
-        $this->cantidad = 1;
-        $this->descuento = 0;
-
-        // Recalcular totales generales
-        $this->actualizarTotales();
     }
+
+    // Reset selección
+    $this->productoSeleccionado = null;
+    $this->cantidad = 1;
+    $this->descuento = 0;
+
+    // Recalcular totales generales
+    $this->actualizarTotales();
+}
+
 
     public function eliminarItem($index)
     {
