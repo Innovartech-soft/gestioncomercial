@@ -23,6 +23,8 @@ License: For each use you must have a valid license purchased only from above li
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <!-- End fonts -->
 
   <!-- CSRF Token -->
@@ -74,6 +76,7 @@ License: For each use you must have a valid license purchased only from above li
 
   <!-- common css -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/app.theme.css') }}" rel="stylesheet"> <!-- <- overrides -->
   <!-- Plugin css import here -->
     <link href="{{ asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/plugins/jquery-tags-input/jquery.tagsinput.min.css') }}" rel="stylesheet" />

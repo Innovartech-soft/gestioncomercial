@@ -1,0 +1,195 @@
+/* =========================================================
+   app.theme.css
+   Tema Dark Gray Moderno + Tema Alternativo Blue Pastel
+   Autor: ChatGPT – Diseño para Sistema GComercial
+   ========================================================= */
+
+/* -------------------------------
+   1) Fuente global: INTER
+-------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body, button, input, select, textarea {
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* =========================================================
+   2) VARIABLES DEL TEMA PRINCIPAL (DEFAULT)
+========================================================= */
+:root {
+ 
+
+  /* Naranja corporativo elegante */
+  --accent-orange: #fce0c4;
+  --accent-orange-bg: rgba(255,180,106,0.12);
+  /* Fondo general / texto */
+  --bs-body-bg: #121316;           /* fondo oscuro suave */
+  --bs-body-color: #1d1e1f;        /* texto principal claro */
+  --bs-border-color: rgba(255,255,255,0.06);
+
+  /* Paleta principal (azul frío para acciones) */
+  --bs-primary: #1E88E5;
+    --bs-primary-rgb: 30,136,229;
+  --bs-danger: #f12c2c;
+    --bs-danger-rgb: #f12c2c;
+  --bs-success: #209e2b;
+  --bs-success-rgb: #209e2b;
+  --bs-secondary: #888484;
+  --bs-secondary-rgb: #888484;
+  --bs-info: #888484;
+  --bs-info-rgb: #888484;
+
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: #1669b8;
+
+
+  /* Accent / system orange (se usa sólo para highlights) */
+  --bs-system-orange: #D35400;
+  --bs-system-orange-hover: #E67E22;
+  --bs-sidebar-orange: #db5a05;
+
+  /* Form controls */
+  --input-bg: #0f1113;
+  --input-border: rgba(255,255,255,0.06);
+  --input-placeholder: rgba(230,233,238,0.45);
+
+}
+
+.btn-primary, .btn.btn-primary {
+  background: linear-gradient(90deg, var(--bs-primary), #1565C0);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.12);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-danger, .btn.btn-danger {
+  background: linear-gradient(90deg, var(--bs-danger), #c01515);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--bs-danger-rgb), 0.12);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-secondary, .btn.btn-secondary {
+  background: linear-gradient(90deg, var(--bs-secondary), #575656);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--bs-secondary-rgb), 0.12);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-info, .btn.btn-info {
+  background: linear-gradient(90deg, var(--bs-info), #575656);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--bs-info-rgb), 0.12);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-success, .btn.btn-success {
+  background: linear-gradient(90deg, var(--bs-success), #066e0f);
+  border: none;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--bs-success-rgb), 0.12);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-primary:hover, .btn-danger:hover, .btn-success:hover {
+  filter: brightness(0.95);
+}
+
+/* =========================================================
+   4) SIDEBAR PRINCIPAL (TEMA DEFAULT NARANJA SUAVE)
+========================================================= */
+
+.sidebar {
+  background: linear-gradient(180deg, #16171a 0%, #1a1b1e 100%) !important;
+  border-right: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+.sidebar .sidebar-header .sidebar-brand {
+  color: #fff !important;
+  font-weight: 700;
+}
+
+.sidebar .nav .link-title {
+    color: var(--accent-orange) !important;
+}
+
+.sidebar .nav .nav-link:hover {
+    color: #FFFFFF !important;
+    background: rgba(255,180,106,0.12) !important;
+}
+
+.sidebar .nav .nav-link:hover {
+    color: #FFFFFF !important;
+    background: rgba(255,180,106,0.12) !important;
+}
+
+/* Activo */
+.sidebar .nav .nav-item.active .nav-link {
+  background: var(--accent-orange-bg) !important;
+  color: var(--accent-orange) !important;
+}
+
+/* Barra izquierda de link activo */
+.sidebar .nav .nav-item.active .nav-link::before {
+  background: var(--accent-orange) !important;
+}
+
+/* =========================================================
+   5) *** TEMA ALTERNATIVO BLUE PASTEL ***
+      Activar: <body class="theme-blue">
+========================================================= */
+
+.theme-blue {
+  /* Colores principales */
+  --accent-blue: #64B5F6;
+  --accent-blue-bg: rgba(100,181,246,0.12);
+}
+
+/* Sidebar (ONLY when theme-blue class is active) */
+.theme-blue .sidebar .nav .nav-link:hover {
+  background: var(--accent-blue-bg) !important;
+  color: var(--accent-blue) !important;
+}
+
+.theme-blue .sidebar .nav .nav-item.active .nav-link {
+  background: var(--accent-blue-bg) !important;
+  color: var(--accent-blue) !important;
+}
+
+.theme-blue .sidebar .nav .nav-item.active .nav-link::before {
+  background: var(--accent-blue) !important;
+}
+
+/* Botón primario adaptado (leve tonalidad azul) */
+.theme-blue .btn-primary {
+  background: linear-gradient(90deg, #64B5F6, #42A5F5) !important;
+  box-shadow: 0 6px 14px rgba(100,181,246,0.25) !important;
+}
+
+/* Inputs más fríos */
+.theme-blue .form-control:focus,
+.theme-blue .form-select:focus {
+  border-color: rgba(100,181,246,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(100,181,246,0.12) !important;
+}
+
+/* Cards ligeramente más azuladas */
+.theme-blue .card,
+.theme-blue .dashboard-card,
+.theme-blue .content-card {
+  border-color: rgba(100,181,246,0.08) !important;
+}
