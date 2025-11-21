@@ -1,7 +1,7 @@
 /* =========================================================
    app.theme.css
-   Tema Dark Gray Moderno + Tema Alternativo Blue Pastel
-   Autor: ChatGPT – Diseño para Sistema GComercial
+   Tema Dark Sidebar + Contenido Light + Tema Alternativo Blue Pastel
+   Compatibilidad total con NobleUI
    ========================================================= */
 
 /* -------------------------------
@@ -14,108 +14,148 @@ body, button, input, select, textarea {
 }
 
 /* =========================================================
-   2) VARIABLES DEL TEMA PRINCIPAL (DEFAULT)
+   2) VARIABLES BASE (main theme)
 ========================================================= */
+
 :root {
- 
 
-  /* Naranja corporativo elegante */
-  --accent-orange: #fce0c4;
+  /* Fondo general claro */
+  --bs-body-bg: #f5f6fa;
+  --bs-body-color: #2c2d30;
+
+  /* Tarjetas e inputs más suaves */
+  --surface-1: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: rgba(0,0,0,0.1);
+  --input-placeholder: rgba(50,50,50,0.45);
+
+  /* Sidebar dark elegante */
+  --sidebar-bg: #1a1b1e;
+  --sidebar-text: #e8e8e8;
+
+  /* Acento naranja corporativo */
+  --accent-orange: #f9cb9d;
   --accent-orange-bg: rgba(255,180,106,0.12);
-  /* Fondo general / texto */
-  --bs-body-bg: #121316;           /* fondo oscuro suave */
-  --bs-body-color: #1d1e1f;        /* texto principal claro */
-  --bs-border-color: rgba(255,255,255,0.06);
 
-  /* Paleta principal (azul frío para acciones) */
+  /* Primarios */
   --bs-primary: #1E88E5;
-    --bs-primary-rgb: 30,136,229;
+  --bs-primary-rgb: 30,136,229;
+
   --bs-danger: #f12c2c;
-    --bs-danger-rgb: #f12c2c;
+  --bs-danger-rgb: 241,44,44;
+
   --bs-success: #209e2b;
-  --bs-success-rgb: #209e2b;
+  --bs-success-rgb: 32,158,43;
+
   --bs-secondary: #888484;
-  --bs-secondary-rgb: #888484;
+  --bs-secondary-rgb: 136,132,132;
+
   --bs-info: #888484;
-  --bs-info-rgb: #888484;
+  --bs-info-rgb: 136,132,132;
 
   --bs-link-color: var(--bs-primary);
   --bs-link-hover-color: #1669b8;
-
-
-  /* Accent / system orange (se usa sólo para highlights) */
-  --bs-system-orange: #D35400;
-  --bs-system-orange-hover: #E67E22;
-  --bs-sidebar-orange: #db5a05;
-
-  /* Form controls */
-  --input-bg: #0f1113;
-  --input-border: rgba(255,255,255,0.06);
-  --input-placeholder: rgba(230,233,238,0.45);
-
-}
-
-.btn-primary, .btn.btn-primary {
-  background: linear-gradient(90deg, var(--bs-primary), #1565C0);
-  border: none;
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.12);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.btn-danger, .btn.btn-danger {
-  background: linear-gradient(90deg, var(--bs-danger), #c01515);
-  border: none;
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(var(--bs-danger-rgb), 0.12);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.btn-secondary, .btn.btn-secondary {
-  background: linear-gradient(90deg, var(--bs-secondary), #575656);
-  border: none;
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(var(--bs-secondary-rgb), 0.12);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.btn-info, .btn.btn-info {
-  background: linear-gradient(90deg, var(--bs-info), #575656);
-  border: none;
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(var(--bs-info-rgb), 0.12);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.btn-success, .btn.btn-success {
-  background: linear-gradient(90deg, var(--bs-success), #066e0f);
-  border: none;
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(var(--bs-success-rgb), 0.12);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.btn-primary:hover, .btn-danger:hover, .btn-success:hover {
-  filter: brightness(0.95);
 }
 
 /* =========================================================
-   4) SIDEBAR PRINCIPAL (TEMA DEFAULT NARANJA SUAVE)
+   3) BOTONES MODERNOS
+========================================================= */
+
+/* -------- 1) Estilos base para TODOS los botones -------- */
+.btn,
+.btn-base {
+    border: none !important;
+    color: #fff !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all .15s ease-in-out !important;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.btn:hover,
+.btn-base:hover {
+    filter: brightness(0.92) !important;
+}
+
+/* -------- 2) Variantes ------------------------------- */
+
+/* PRIMARY */
+.btn-primary,
+.btn-base.btn-primary {
+    background: linear-gradient(90deg, var(--bs-primary), #1565C0);
+    box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.25) !important;
+}
+
+/* DANGER */
+.btn-danger,
+.btn-base.btn-danger {
+    background: linear-gradient(90deg, var(--bs-danger), #c01515);
+    box-shadow: 0 6px 14px rgba(var(--bs-danger-rgb), 0.25) !important;
+}
+
+/* SUCCESS */
+.btn-success,
+.btn-base.btn-success {
+    background: linear-gradient(90deg, var(--bs-success), #0c6e18);
+    box-shadow: 0 6px 14px rgba(var(--bs-success-rgb), 0.25) !important;
+}
+
+/* SECONDARY */
+.btn-secondary,
+.btn-base.btn-secondary {
+    background: linear-gradient(90deg, var(--bs-secondary), #646464);
+    box-shadow: 0 6px 14px rgba(var(--bs-secondary-rgb), 0.25) !important;
+}
+
+/* INFO */
+.btn-info,
+.btn-base.btn-info {
+    background: linear-gradient(90deg, var(--bs-info), #5f5f5f);
+    box-shadow: 0 6px 14px rgba(var(--bs-info-rgb), 0.25) !important;
+}
+
+/* =========================================================
+   4) TARJETAS / CARDS / DASHBOARD
+========================================================= */
+
+.card,
+.dashboard-card,
+.content-card {
+  background: var(--surface-1) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+/* =========================================================
+   5) INPUTS MÁS SUAVES
+========================================================= */
+
+.form-control,
+.form-select {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(var(--bs-primary-rgb),0.4) !important;
+  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15) !important;
+}
+
+.form-control::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* =========================================================
+   6) SIDEBAR OSCURO ELEGANTE
 ========================================================= */
 
 .sidebar {
-  background: linear-gradient(180deg, #16171a 0%, #1a1b1e 100%) !important;
-  border-right: 1px solid rgba(255,255,255,0.04) !important;
+  background: var(--sidebar-bg) !important;
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
 .sidebar .sidebar-header .sidebar-brand {
@@ -123,18 +163,21 @@ body, button, input, select, textarea {
   font-weight: 700;
 }
 
+.sidebar .nav .nav-item.nav-category {
+  color: #ffffff !important;
+  font-weight: 600;
+  margin-top: 18px;
+  font-size: 0.8rem;
+}
+
 .sidebar .nav .link-title {
-    color: var(--accent-orange) !important;
+  color: var(--sidebar-text) !important;
 }
 
+/* Hover */
 .sidebar .nav .nav-link:hover {
-    color: #FFFFFF !important;
-    background: rgba(255,180,106,0.12) !important;
-}
-
-.sidebar .nav .nav-link:hover {
-    color: #FFFFFF !important;
-    background: rgba(255,180,106,0.12) !important;
+  background: rgba(255,255,255,0.05) !important;
+  color: #ffffff !important;
 }
 
 /* Activo */
@@ -143,28 +186,91 @@ body, button, input, select, textarea {
   color: var(--accent-orange) !important;
 }
 
-/* Barra izquierda de link activo */
-.sidebar .nav .nav-item.active .nav-link::before {
-  background: var(--accent-orange) !important;
+/* NAV LINK ::before — base */
+.sidebar .nav .sub-menu .nav-link::before {
+    content: "";
+    width: 8px;          /* estaba entre 6–7px normalmente */
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 12px;
+    border: 2px solid var(--accent-orange);
+    background: transparent;
+    transition: all 0.25s ease-in-out;
+    flex-shrink: 0;
+}
+
+/* NAV LINK ::before — HOVER */
+.sidebar .nav .sub-menu .nav-link:hover::before {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+/* NAV LINK ::before — ACTIVO */
+.sidebar .nav .sub-menu .nav-link.active::before {
+    background: #ffffff !important;     /* círculo totalmente blanco */
+    border-color: #ffffff !important;   /* borde blanco */
+    width: 8px !important;             /* +25% tamaño (muy visible pero elegante) */
+    height: 8px !important;
+}
+
+/* Iconos */
+.sidebar .nav .link-icon {
+  color: #d6d6d6 !important;
 }
 
 /* =========================================================
-   5) *** TEMA ALTERNATIVO BLUE PASTEL ***
-      Activar: <body class="theme-blue">
+   7) HEADER (NAVBAR) MODERNO
+========================================================= */
+
+.navbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar .nav-link {
+  color: #444 !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--bs-primary) !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background: #ffffff !important;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* =========================================================
+   8) FOOTER — SIN FORZAR DISPLAY (compatible NobleUI)
+========================================================= */
+
+.footer {
+  background: #ffffff !important;
+  color: #555 !important;
+  border-top: 1px solid rgba(0,0,0,0.08) !important;
+  padding: 15px 20px !important;
+}
+
+/* =========================================================
+   9) TEMA ALTERNATIVO BLUE PASTEL
+      Activar con: <body class="theme-blue">
 ========================================================= */
 
 .theme-blue {
-  /* Colores principales */
   --accent-blue: #64B5F6;
-  --accent-blue-bg: rgba(100,181,246,0.12);
+  --accent-blue-bg: rgba(100,181,246,0.15);
 }
 
-/* Sidebar (ONLY when theme-blue class is active) */
+/* Sidebar hover */
 .theme-blue .sidebar .nav .nav-link:hover {
   background: var(--accent-blue-bg) !important;
   color: var(--accent-blue) !important;
 }
 
+/* Activo azul */
 .theme-blue .sidebar .nav .nav-item.active .nav-link {
   background: var(--accent-blue-bg) !important;
   color: var(--accent-blue) !important;
@@ -174,22 +280,16 @@ body, button, input, select, textarea {
   background: var(--accent-blue) !important;
 }
 
-/* Botón primario adaptado (leve tonalidad azul) */
+/* Botones */
 .theme-blue .btn-primary {
   background: linear-gradient(90deg, #64B5F6, #42A5F5) !important;
-  box-shadow: 0 6px 14px rgba(100,181,246,0.25) !important;
+  box-shadow: 0 6px 14px rgba(100,181,246,0.25);
 }
 
-/* Inputs más fríos */
+/* Inputs en azul */
 .theme-blue .form-control:focus,
 .theme-blue .form-select:focus {
   border-color: rgba(100,181,246,0.5) !important;
-  box-shadow: 0 0 0 3px rgba(100,181,246,0.12) !important;
+  box-shadow: 0 0 0 3px rgba(100,181,246,0.15) !important;
 }
 
-/* Cards ligeramente más azuladas */
-.theme-blue .card,
-.theme-blue .dashboard-card,
-.theme-blue .content-card {
-  border-color: rgba(100,181,246,0.08) !important;
-}
