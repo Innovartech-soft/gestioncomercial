@@ -1,0 +1,295 @@
+/* =========================================================
+   app.theme.css
+   Tema Dark Sidebar + Contenido Light + Tema Alternativo Blue Pastel
+   Compatibilidad total con NobleUI
+   ========================================================= */
+
+/* -------------------------------
+   1) Fuente global: INTER
+-------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body, button, input, select, textarea {
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* =========================================================
+   2) VARIABLES BASE (main theme)
+========================================================= */
+
+:root {
+
+  /* Fondo general claro */
+  --bs-body-bg: #f5f6fa;
+  --bs-body-color: #2c2d30;
+
+  /* Tarjetas e inputs más suaves */
+  --surface-1: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: rgba(0,0,0,0.1);
+  --input-placeholder: rgba(50,50,50,0.45);
+
+  /* Sidebar dark elegante */
+  --sidebar-bg: #1a1b1e;
+  --sidebar-text: #e8e8e8;
+
+  /* Acento naranja corporativo */
+  --accent-orange: #f9cb9d;
+  --accent-orange-bg: rgba(255,180,106,0.12);
+
+  /* Primarios */
+  --bs-primary: #1E88E5;
+  --bs-primary-rgb: 30,136,229;
+
+  --bs-danger: #f12c2c;
+  --bs-danger-rgb: 241,44,44;
+
+  --bs-success: #209e2b;
+  --bs-success-rgb: 32,158,43;
+
+  --bs-secondary: #888484;
+  --bs-secondary-rgb: 136,132,132;
+
+  --bs-info: #888484;
+  --bs-info-rgb: 136,132,132;
+
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: #1669b8;
+}
+
+/* =========================================================
+   3) BOTONES MODERNOS
+========================================================= */
+
+/* -------- 1) Estilos base para TODOS los botones -------- */
+.btn,
+.btn-base {
+    border: none !important;
+    color: #fff !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all .15s ease-in-out !important;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.btn:hover,
+.btn-base:hover {
+    filter: brightness(0.92) !important;
+}
+
+/* -------- 2) Variantes ------------------------------- */
+
+/* PRIMARY */
+.btn-primary,
+.btn-base.btn-primary {
+    background: linear-gradient(90deg, var(--bs-primary), #1565C0);
+    box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.25) !important;
+}
+
+/* DANGER */
+.btn-danger,
+.btn-base.btn-danger {
+    background: linear-gradient(90deg, var(--bs-danger), #c01515);
+    box-shadow: 0 6px 14px rgba(var(--bs-danger-rgb), 0.25) !important;
+}
+
+/* SUCCESS */
+.btn-success,
+.btn-base.btn-success {
+    background: linear-gradient(90deg, var(--bs-success), #0c6e18);
+    box-shadow: 0 6px 14px rgba(var(--bs-success-rgb), 0.25) !important;
+}
+
+/* SECONDARY */
+.btn-secondary,
+.btn-base.btn-secondary {
+    background: linear-gradient(90deg, var(--bs-secondary), #646464);
+    box-shadow: 0 6px 14px rgba(var(--bs-secondary-rgb), 0.25) !important;
+}
+
+/* INFO */
+.btn-info,
+.btn-base.btn-info {
+    background: linear-gradient(90deg, var(--bs-info), #5f5f5f);
+    box-shadow: 0 6px 14px rgba(var(--bs-info-rgb), 0.25) !important;
+}
+
+/* =========================================================
+   4) TARJETAS / CARDS / DASHBOARD
+========================================================= */
+
+.card,
+.dashboard-card,
+.content-card {
+  background: var(--surface-1) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+/* =========================================================
+   5) INPUTS MÁS SUAVES
+========================================================= */
+
+.form-control,
+.form-select {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(var(--bs-primary-rgb),0.4) !important;
+  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15) !important;
+}
+
+.form-control::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* =========================================================
+   6) SIDEBAR OSCURO ELEGANTE
+========================================================= */
+
+.sidebar {
+  background: var(--sidebar-bg) !important;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar .sidebar-header .sidebar-brand {
+  color: #fff !important;
+  font-weight: 700;
+}
+
+.sidebar .nav .nav-item.nav-category {
+  color: #ffffff !important;
+  font-weight: 600;
+  margin-top: 18px;
+  font-size: 0.8rem;
+}
+
+.sidebar .nav .link-title {
+  color: var(--sidebar-text) !important;
+}
+
+/* Hover */
+.sidebar .nav .nav-link:hover {
+  background: rgba(255,255,255,0.05) !important;
+  color: #ffffff !important;
+}
+
+/* Activo */
+.sidebar .nav .nav-item.active .nav-link {
+  background: var(--accent-orange-bg) !important;
+  color: var(--accent-orange) !important;
+}
+
+/* NAV LINK ::before — base */
+.sidebar .nav .sub-menu .nav-link::before {
+    content: "";
+    width: 8px;          /* estaba entre 6–7px normalmente */
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 12px;
+    border: 2px solid var(--accent-orange);
+    background: transparent;
+    transition: all 0.25s ease-in-out;
+    flex-shrink: 0;
+}
+
+/* NAV LINK ::before — HOVER */
+.sidebar .nav .sub-menu .nav-link:hover::before {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+/* NAV LINK ::before — ACTIVO */
+.sidebar .nav .sub-menu .nav-link.active::before {
+    background: #ffffff !important;     /* círculo totalmente blanco */
+    border-color: #ffffff !important;   /* borde blanco */
+    width: 8px !important;             /* +25% tamaño (muy visible pero elegante) */
+    height: 8px !important;
+}
+
+/* Iconos */
+.sidebar .nav .link-icon {
+  color: #d6d6d6 !important;
+}
+
+/* =========================================================
+   7) HEADER (NAVBAR) MODERNO
+========================================================= */
+
+.navbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar .nav-link {
+  color: #444 !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--bs-primary) !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background: #ffffff !important;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* =========================================================
+   8) FOOTER — SIN FORZAR DISPLAY (compatible NobleUI)
+========================================================= */
+
+.footer {
+  background: #ffffff !important;
+  color: #555 !important;
+  border-top: 1px solid rgba(0,0,0,0.08) !important;
+  padding: 15px 20px !important;
+}
+
+/* =========================================================
+   9) TEMA ALTERNATIVO BLUE PASTEL
+      Activar con: <body class="theme-blue">
+========================================================= */
+
+.theme-blue {
+  --accent-blue: #64B5F6;
+  --accent-blue-bg: rgba(100,181,246,0.15);
+}
+
+/* Sidebar hover */
+.theme-blue .sidebar .nav .nav-link:hover {
+  background: var(--accent-blue-bg) !important;
+  color: var(--accent-blue) !important;
+}
+
+/* Activo azul */
+.theme-blue .sidebar .nav .nav-item.active .nav-link {
+  background: var(--accent-blue-bg) !important;
+  color: var(--accent-blue) !important;
+}
+
+.theme-blue .sidebar .nav .nav-item.active .nav-link::before {
+  background: var(--accent-blue) !important;
+}
+
+/* Botones */
+.theme-blue .btn-primary {
+  background: linear-gradient(90deg, #64B5F6, #42A5F5) !important;
+  box-shadow: 0 6px 14px rgba(100,181,246,0.25);
+}
+
+/* Inputs en azul */
+.theme-blue .form-control:focus,
+.theme-blue .form-select:focus {
+  border-color: rgba(100,181,246,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(100,181,246,0.15) !important;
+}
+
