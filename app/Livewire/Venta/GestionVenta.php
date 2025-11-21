@@ -9,6 +9,7 @@ use App\Vendedor;
 use App\Marca;
 use App\Rubro;
 use App\Proveedor;
+use App\Lista;
 use App\TipoVenta;
 use Illuminate\Support\Collection;
 
@@ -31,6 +32,8 @@ class GestionVenta extends Component
     public $productoSeleccionado = null;
     public $cantidad = 1;
     public $descuento = 0;
+    public $listasDescuento = [];
+    public $listaSeleccionada = '';
 
     // Totales discriminados
     public $subtotalSinIVA = 0;
@@ -51,6 +54,7 @@ class GestionVenta extends Component
         $this->rubros = Rubro::all();
         $this->proveedores = Proveedor::all();
         $this->productos = collect();
+        $this->listasDescuento = Lista::all();
     }
 
     public function updated($field)
@@ -58,6 +62,17 @@ class GestionVenta extends Component
         if (in_array($field, ['buscador', 'filtroMarca', 'filtroProveedor', 'filtroRubro'])) {
             $this->buscarProductos();
         }
+        if ($field === 'cliente' && $this->cliente) {
+            $clienteObj = Cliente::find($this->cliente);
+
+            // si el cliente tiene una lista de descuento asignada
+            if ($clienteObj && $clienteObj->lista) {
+                $this->listaSeleccionada = $clienteObj->lista->id;
+            } else {
+                $this->listaSeleccionada = '';
+            }
+        }
+
     }
 
     public function getTotalConIVAProperty()
@@ -190,8 +205,37 @@ class GestionVenta extends Component
 
     // Recalcular totales generales
     $this->actualizarTotales();
-}
+    }
 
+    public function actualizarItem($index)
+    {
+    if (!isset($this->carrito[$index])) return;
+
+    $item = $this->carrito[$index];
+
+    $cantidad  = max(1, (int)$item['cantidad']);
+    $precio    = max(0, (float)$item['precio']);
+    $descuento = max(0, min(100, (float)$item['descuento']));
+
+    // Subtotal base
+    $subConIVA = $precio * $cantidad;
+    $subSinIVA = ($item['precio_sin_iva'] ?? ($precio / 1.21)) * $cantidad;
+
+    // Aplicar descuento
+    if ($descuento > 0) {
+        $factor = (1 - ($descuento / 100));
+        $subConIVA *= $factor;
+        $subSinIVA *= $factor;
+    }
+
+    // Asignar totales
+    $this->carrito[$index]['subtotal_con_iva'] = round($subConIVA, 2);
+    $this->carrito[$index]['subtotal_sin_iva'] = round($subSinIVA, 2);
+    $this->carrito[$index]['subtotal']         = round($subConIVA, 2);
+
+    // Recalcular totales generales
+    $this->actualizarTotales();
+    }
 
     public function eliminarItem($index)
     {

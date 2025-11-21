@@ -84,35 +84,30 @@ body, button, input, select, textarea {
 .btn-primary,
 .btn-base.btn-primary {
     background: linear-gradient(90deg, var(--bs-primary), #1565C0);
-    box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.25) !important;
 }
 
 /* DANGER */
 .btn-danger,
 .btn-base.btn-danger {
     background: linear-gradient(90deg, var(--bs-danger), #c01515);
-    box-shadow: 0 6px 14px rgba(var(--bs-danger-rgb), 0.25) !important;
 }
 
 /* SUCCESS */
 .btn-success,
 .btn-base.btn-success {
     background: linear-gradient(90deg, var(--bs-success), #0c6e18);
-    box-shadow: 0 6px 14px rgba(var(--bs-success-rgb), 0.25) !important;
 }
 
 /* SECONDARY */
 .btn-secondary,
 .btn-base.btn-secondary {
     background: linear-gradient(90deg, var(--bs-secondary), #646464);
-    box-shadow: 0 6px 14px rgba(var(--bs-secondary-rgb), 0.25) !important;
 }
 
 /* INFO */
 .btn-info,
 .btn-base.btn-info {
     background: linear-gradient(90deg, var(--bs-info), #5f5f5f);
-    box-shadow: 0 6px 14px rgba(var(--bs-info-rgb), 0.25) !important;
 }
 
 /* =========================================================

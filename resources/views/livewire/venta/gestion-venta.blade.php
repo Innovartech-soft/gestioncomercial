@@ -36,7 +36,7 @@
     <div class="row g-3">
 
         {{-- ================== IZQUIERDA ================== --}}
-        <div class="col-12 col-lg-7 p-3 border rounded">
+        <div class="col-12 col-lg-6 p-3 border rounded">
 
             <div class="row mb-3">
                 <div class="col-4">
@@ -71,63 +71,147 @@
             wire:model.live="buscador">
 
             <div class="border p-2" style="min-height:250px;">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <th>Nombre</th>
-                        <th class="text-end">Precio</th>
-                        <th class="text-end">Stock</th>
-                    </thead>
-                    <tbody>
-                        @if($productos && $productos->count())
-                            @foreach($productos as $producto)
-                                <tr wire:click="seleccionarProducto({{ $producto->id }})" style="cursor:pointer;">
-                                    <td>{{ $producto->nombre }}</td>
-                                    <td class="text-end">${{ number_format($producto->precio_pesos_con_iva,1) }}</td>
-                                    <td class="text-end">{{$producto->stock}}</td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr><td colspan="2">No hay resultados para la búsqueda.</td></tr>
-                        @endif
-                    </tbody>
-                </table>
+            <table class="table table-sm table-hover">
+                <thead>
+                    <th>Cod Int.</th>
+                    <th>Producto</th>
+                    <th class="text-end">Precio</th>
+                    <th class="text-end">IVA</th>
+                    <th class="text-end">Stock</th>
+                </thead>
+
+                <tbody>
+                    @if($productos && $productos->count())
+                        @foreach($productos as $producto)
+                            <tr wire:click="seleccionarProducto({{ $producto->id }})" style="cursor:pointer;">
+
+                                <td> {{ $producto->codigo_interno ?? '-' }}</td>
+                                {{-- NOMBRE + ICONO OFERTA --}}
+                                <td>
+                                    <div class="fw-semibold">{{ $producto->nombre }}</div>
+
+                                    @if($producto->isOffer())
+                                        <div>
+                                            <span class="badge bg-danger mt-1" style="font-size: .50rem;">
+                                                <i class="fas fa-fire"></i> OFERTA
+                                            </span>
+                                        </div>
+                                    @endif
+                                </td>
+                                
+                                {{-- PRECIO (normal / oferta) --}}
+                                <td class="text-end">
+
+                                    @if($producto->isOffer())
+
+                                        {{-- Precio normal tachado --}}
+                                        <div class="text-muted" style="text-decoration: line-through; font-size: .8rem;">
+                                            ${{ number_format($producto->precio_pesos_con_iva, 2) }}
+                                        </div>
+
+                                        {{-- Precio oferta --}}
+                                        <div class="fw-bold text-success" style="font-size: .9rem;">
+                                            ${{ number_format($producto->precio_costo_oferta, 2) }}
+                                        </div>
+
+                                    @else
+
+                                        {{-- Precio normal (sin oferta) --}}
+                                        <div class="fw-bold">
+                                            ${{ number_format($producto->precio_pesos_con_iva, 2) }}
+                                        </div>
+
+                                    @endif
+
+                                </td>
+                                 {{-- IVA --}}
+                                <td class="text-end">
+                                    {{ $producto->getTipoIva() }}%
+                                </td>
+
+                                {{-- STOCK --}}
+                                <td class="text-end">
+                                    {{ $producto->stock }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr><td colspan="4">No hay resultados para la búsqueda.</td></tr>
+                    @endif
+                </tbody>
+            </table>
+
             </div>
 
         </div>
 
         {{-- ================== DERECHA ================== --}}
-        <div class="col-12 col-lg-5 p-3 border rounded">
+        <div class="col-12 col-lg-6 p-3 border rounded">
 
             @if($productoSeleccionado)
-            <div class="text-center mb-3">
-                <h5>{{ $productoSeleccionado->nombre }}</h5>
-                <h6 class="fw-bold">${{ number_format($productoSeleccionado->precio,2) }}</h6>
+
+            {{-- NOMBRE DEL PRODUCTO --}}
+            <div class="text-center mb-2">
+                <h5 class="fw-bold">{{ $productoSeleccionado->nombre }}</h5>
             </div>
 
+            {{-- PRECIO ACTUAL --}} 
+            <div class="text-center mb-3">
+
+                @if($productoSeleccionado->isOffer())
+                    {{-- Precio normal tachado --}}
+                    <div class="text-muted" style="text-decoration: line-through;">
+                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                    </div>
+
+                    {{-- Precio con oferta --}}
+                    <div class="fw-bold text-success" style="font-size: 1.2rem;">
+                        ${{ number_format($productoSeleccionado->precio_costo_oferta, 1) }}
+                    </div>
+                @else
+                    <div class="fw-bold" style="font-size: 1.2rem;">
+                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                    </div>
+                @endif
+            </div>
+
+            {{-- LISTA DE DESCUENTOS --}}
             <div class="row mb-3">
-                <div class="col-6">
+                <div class="col-4">
                     <input type="number" min="1" class="form-control" wire:model="cantidad">
                     <small>Cantidad</small>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <input type="number" class="form-control" wire:model="descuento">
                     <small>Descuento %</small>
                 </div>
-            </div>
+                <div class="col-4">
+                    <select class="form-select" wire:model="listaSeleccionada">
+                        <option value="">Seleccione lista...</option>
 
+                        @foreach($listasDescuento as $lista)
+                            <option value="{{ $lista->id }}">
+                                {{ $lista->nombre }} ({{ $lista->valor }}%)
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
             <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito">
                 Añadir
             </button>
-            @endif
+        @endif
 
             <table class="table table-sm align-middle">
     <thead>
         <tr>
             <th>Producto</th>
             <th width="70">Cant.</th>
+            <th width="120">Precio</th>
             <th width="70">Desc %</th>
             <th class="text-end" width="120">Subtotal</th>
-            <th width="40"></th>
+            <th width="10"></th>
         </tr>
     </thead>
 
@@ -142,6 +226,15 @@
                     min="1"
                     class="form-control form-control-sm"
                     wire:model.lazy="carrito.{{ $index }}.cantidad"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+
+            {{-- PRECIO UNITARIO (editable) --}}
+            <td>
+                <input type="number"
+                    step="0.1"
+                    class="form-control form-control-sm"
+                    wire:model.lazy="carrito.{{ $index }}.precio"
                     wire:change="actualizarItem({{ $index }})">
             </td>
 
