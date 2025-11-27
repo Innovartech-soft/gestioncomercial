@@ -14,7 +14,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Cliente</label>
-            <select class="form-select" wire:model="cliente">
+            <select class="form-select" wire:model.change="cliente">
                 <option value="">Seleccione...</option>
                 @foreach($clientes as $cliente)
                 <option value="{{ $cliente->id }}">{{ $cliente->razon_social ?? $cliente->nombre }}</option>
@@ -182,12 +182,17 @@
                     <small>Cantidad</small>
                 </div>
                 <div class="col-4">
-                    <input type="number" class="form-control" wire:model="descuento">
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        wire:model="descuento"
+                        wire:key="descuento-{{ $listaSeleccionada }}-{{ $productoSeleccionado->id ?? 0 }}"
+                    >
                     <small>Descuento %</small>
                 </div>
                 <div class="col-4">
-                    <select class="form-select" wire:model="listaSeleccionada">
-                        <option value="">Seleccione lista...</option>
+                    <select class="form-select" wire:model.change="listaSeleccionada">
+                        <option value="">Lista descuento...</option>
 
                         @foreach($listasDescuento as $lista)
                             <option value="{{ $lista->id }}">

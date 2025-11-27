@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Venta;
 
-use Livewire\Component;
-use App\Producto;
-use App\Cliente;
-use App\Vendedor;
+use App\Lista;
 use App\Marca;
 use App\Rubro;
+use App\Cliente;
+use App\Producto;
+use App\Vendedor;
 use App\Proveedor;
-use App\Lista;
 use App\TipoVenta;
+use Livewire\Component;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class GestionVenta extends Component
 {
@@ -32,8 +33,9 @@ class GestionVenta extends Component
     public $productoSeleccionado = null;
     public $cantidad = 1;
     public $descuento = 0;
+    public $listaSeleccionada = null;
     public $listasDescuento = [];
-    public $listaSeleccionada = '';
+
 
     // Totales discriminados
     public $subtotalSinIVA = 0;
@@ -57,23 +59,38 @@ class GestionVenta extends Component
         $this->listasDescuento = Lista::all();
     }
 
-    public function updated($field)
+    public function updatedBuscador()
     {
-        if (in_array($field, ['buscador', 'filtroMarca', 'filtroProveedor', 'filtroRubro'])) {
-            $this->buscarProductos();
-        }
-        if ($field === 'cliente' && $this->cliente) {
-            $clienteObj = Cliente::find($this->cliente);
-
-            // si el cliente tiene una lista de descuento asignada
-            if ($clienteObj && $clienteObj->lista) {
-                $this->listaSeleccionada = $clienteObj->lista->id;
-            } else {
-                $this->listaSeleccionada = '';
-            }
-        }
-
+        $this->buscarProductos();
     }
+
+    public function updatedFiltroMarca()
+    {
+        $this->buscarProductos();
+    }
+
+    public function updatedFiltroProveedor()
+    {
+        $this->buscarProductos();
+    }
+
+    public function updatedFiltroRubro()
+    {
+        $this->buscarProductos();
+    }
+
+    public function updatedCliente($value)
+    {
+        $clienteObj = Cliente::find($value);
+
+        if ($clienteObj && $clienteObj->lista) {
+            $this->listaSeleccionada = $clienteObj->lista->id;
+        } else {
+            $this->listaSeleccionada = null;
+        }
+    }
+
+
 
     public function getTotalConIVAProperty()
     {
@@ -128,8 +145,41 @@ class GestionVenta extends Component
     {
         $this->productoSeleccionado = Producto::find($id);
         $this->cantidad = 1;
-        $this->descuento = 0;
+        Log::info('Producto seleccionado - id: ' . $id);
+        if ($this->listaSeleccionada) {
+
+            $idLista = (int) $this->listaSeleccionada;
+
+            $lista = collect($this->listasDescuento)->first(fn($l) => (string)$l->id === (string)$this->listaSeleccionada);
+
+            if ($lista) {
+                $this->descuento = (float) $lista->valor;
+            }
+        } else {
+            $this->descuento = 0;
+        }
     }
+
+
+    public function updatedListaSeleccionada($value)
+    {
+        if (!$value) {
+            return;
+        }
+        Log::info('Lista seleccionada - nombre: ' . $value);
+        // FORZAR que la comparación no falle por tipo
+        $lista = collect($this->listasDescuento)
+                    ->first(function($l) use ($value) {
+                        return (string)$l->id === (string)$value;
+                    });
+
+        if ($lista) {
+            $this->descuento = floatval($lista->valor);
+            Log::info('Lista valor - precio: ' . $this->descuento);
+        }
+    }
+
+
 
     public function agregarCarrito()
 {
