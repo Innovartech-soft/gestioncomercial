@@ -341,6 +341,15 @@ class GestionVenta extends Component
         $this->dispatch('hide-modal-pago');
     }
 
+    public function resetPago()
+    {
+        $this->pago['cuentaCorriente'] = false;
+        $this->pago['efectivo'] = 0;
+        $this->pago['tarjeta'] = 0;
+        $this->pago['cheque'] = 0;
+        $this->pago['otro'] = 0;
+    }
+
     public function aplicarPagoTotal($metodo)
     {
         $metodo = (string) $metodo;
@@ -404,6 +413,15 @@ class GestionVenta extends Component
         foreach (['efectivo', 'tarjeta', 'cheque', 'otro'] as $key) {
             $this->pago[$key] = $key === $metodo ? $valor : 0;
         }
+    }
+
+    public function getPuedeConfirmarPagoProperty()
+    {
+        if ($this->pago['cuentaCorriente']) {
+            return true;
+        }
+
+        return $this->totalPago > 0;
     }
 
     public function render()

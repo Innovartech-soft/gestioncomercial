@@ -376,6 +376,11 @@
                         <input type="text" class="form-control fs-5 fw-bold" value="${{ number_format($this->totalPago, 2) }}" disabled>
                     </div>
                     <div class="col-12">
+                        <small class="text-info text-decoration-underline d-inline-block mt-2" role="button" style="cursor:pointer" wire:click="resetPago">
+                            Vaciar valores de pago
+                        </small>
+                    </div>
+                    <div class="col-12">
                         <label class="form-label">Observaciones</label>
                         <textarea class="form-control" rows="3" wire:model.defer="observacionesPago"></textarea>
                     </div>
@@ -385,7 +390,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" wire:click="cerrarModalPago">
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-primary" wire:click="confirmarPago">
+                <button type="button" class="btn btn-primary" wire:click="confirmarPago" @disabled(!$this->puedeConfirmarPago)>
                     Confirmar pago
                 </button>
             </div>
