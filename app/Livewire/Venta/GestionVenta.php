@@ -151,6 +151,17 @@ class GestionVenta extends Component
         }
     }
 
+    public function seleccionarProductoUnico(): void
+    {
+        $this->buscarProductos();
+
+        if (! $this->productos || $this->productos->count() !== 1) {
+            return;
+        }
+
+        $this->seleccionarProducto($this->productos->first()->id);
+    }
+
     public function seleccionarProducto($id)
     {
         $this->productoSeleccionado = Producto::find($id);

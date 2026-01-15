@@ -69,7 +69,7 @@
             </div>
 
             <input type="text" class="form-control mb-3" placeholder="🔎 Buscar por nombre o escanear código de barras…"
-            wire:model.live="buscador">
+            wire:model.live="buscador" wire:keydown.enter.prevent="seleccionarProductoUnico">
 
             <div class="border p-2" style="min-height:250px;">
             <table class="table table-sm table-hover">
