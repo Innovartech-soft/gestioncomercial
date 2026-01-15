@@ -323,12 +323,12 @@ class GestionVenta extends Component
 
     public function abrirModalPago()
     {
-        $this->dispatchBrowserEvent('show-modal-pago');
+        $this->dispatch('show-modal-pago');
     }
 
     public function cerrarModalPago()
     {
-        $this->dispatchBrowserEvent('hide-modal-pago');
+        $this->dispatch('hide-modal-pago');
     }
 
     public function confirmarPago()
@@ -338,7 +338,7 @@ class GestionVenta extends Component
             'total_pago' => $this->totalPago,
         ]);
 
-        $this->dispatchBrowserEvent('hide-modal-pago');
+        $this->dispatch('hide-modal-pago');
     }
 
     public function render()
