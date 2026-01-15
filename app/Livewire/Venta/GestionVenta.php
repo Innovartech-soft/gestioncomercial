@@ -348,6 +348,10 @@ class GestionVenta extends Component
             return;
         }
 
+        if ($this->pago['cuentaCorriente']) {
+            return;
+        }
+
         $this->pago[$metodo] = round($this->totalConIVA, 2);
     }
 
