@@ -316,14 +316,6 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Total venta</label>
-                        <input type="text" class="form-control" value="${{ number_format($totalConIVA, 2) }}" disabled>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Total pago</label>
-                        <input type="text" class="form-control" value="${{ number_format($this->totalPago, 2) }}" disabled>
-                    </div>
                     <div class="col-12">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="pagoCuentaCorriente" wire:model="pago.cuentaCorriente">
@@ -334,18 +326,38 @@
                     <div class="col-12 col-md-6">
                         <label class="form-label">Efectivo</label>
                         <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.efectivo">
+                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('efectivo')">
+                            Pagar total
+                        </button>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Tarjeta</label>
                         <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.tarjeta">
+                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('tarjeta')">
+                            Pagar total
+                        </button>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Cheque</label>
                         <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.cheque">
+                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('cheque')">
+                            Pagar total
+                        </button>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Otro</label>
                         <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.otro">
+                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('otro')">
+                            Pagar total
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Total venta</label>
+                        <input type="text" class="form-control fs-5 fw-bold" value="${{ number_format($totalConIVA, 2) }}" disabled>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Total pago</label>
+                        <input type="text" class="form-control fs-5 fw-bold" value="${{ number_format($this->totalPago, 2) }}" disabled>
                     </div>
                     <div class="col-12">
                         <label class="form-label">Observaciones</label>

@@ -341,6 +341,16 @@ class GestionVenta extends Component
         $this->dispatch('hide-modal-pago');
     }
 
+    public function aplicarPagoTotal($metodo)
+    {
+        $metodo = (string) $metodo;
+        if (!in_array($metodo, ['efectivo', 'tarjeta', 'cheque', 'otro'], true)) {
+            return;
+        }
+
+        $this->pago[$metodo] = round($this->totalConIVA, 2);
+    }
+
     public function render()
     {
         return view('livewire.venta.gestion-venta', [
