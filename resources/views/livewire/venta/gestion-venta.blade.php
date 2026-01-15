@@ -321,7 +321,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Total pago</label>
-                        <input type="text" class="form-control" value="${{ number_format($totalPago, 2) }}" disabled>
+                        <input type="text" class="form-control" value="${{ number_format($this->totalPago, 2) }}" disabled>
                     </div>
                     <div class="col-12">
                         <div class="form-check form-switch">
