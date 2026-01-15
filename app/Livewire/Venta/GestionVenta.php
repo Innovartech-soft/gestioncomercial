@@ -228,7 +228,7 @@ class GestionVenta extends Component
         $this->carrito[$index]['cantidad'] += (int) $this->cantidad;
 
         $cantidadTotal = $this->carrito[$index]['cantidad'];
-        $descuento = $this->carrito[$index]['descuento'];
+        $descuento = (float) $this->descuento;
 
         // Recalcular totales
         $subConIVA = $precioConIVA * $cantidadTotal;
@@ -241,6 +241,9 @@ class GestionVenta extends Component
         }
 
         // Actualizar carrito
+        $this->carrito[$index]['precio'] = $precioConIVA;
+        $this->carrito[$index]['precio_sin_iva'] = $precioSinIVA;
+        $this->carrito[$index]['descuento'] = $descuento;
         $this->carrito[$index]['subtotal_con_iva'] = round($subConIVA, 2);
         $this->carrito[$index]['subtotal_sin_iva'] = round($subSinIVA, 2);
         $this->carrito[$index]['subtotal']         = round($subConIVA, 2); // compatibilidad
