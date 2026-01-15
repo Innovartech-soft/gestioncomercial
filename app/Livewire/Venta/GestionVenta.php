@@ -352,7 +352,7 @@ class GestionVenta extends Component
             return;
         }
 
-        $this->pago[$metodo] = round($this->totalConIVA, 2);
+        $this->setPagoMetodo($metodo, $this->totalConIVA);
     }
 
     public function updatedPagoCuentaCorriente($value)
@@ -362,6 +362,47 @@ class GestionVenta extends Component
             $this->pago['tarjeta'] = 0;
             $this->pago['cheque'] = 0;
             $this->pago['otro'] = 0;
+        }
+    }
+
+    public function updatedPagoEfectivo($value)
+    {
+        $this->syncPagoInput('efectivo', $value);
+    }
+
+    public function updatedPagoTarjeta($value)
+    {
+        $this->syncPagoInput('tarjeta', $value);
+    }
+
+    public function updatedPagoCheque($value)
+    {
+        $this->syncPagoInput('cheque', $value);
+    }
+
+    public function updatedPagoOtro($value)
+    {
+        $this->syncPagoInput('otro', $value);
+    }
+
+    private function syncPagoInput(string $metodo, $value): void
+    {
+        if ($this->pago['cuentaCorriente']) {
+            $this->pago[$metodo] = 0;
+            return;
+        }
+
+        $valor = is_numeric($value) ? (float) $value : 0;
+        $this->pago[$metodo] = max(0, round($valor, 2));
+    }
+
+    private function setPagoMetodo(string $metodo, $value): void
+    {
+        $valor = is_numeric($value) ? (float) $value : 0;
+        $valor = max(0, round($valor, 2));
+
+        foreach (['efectivo', 'tarjeta', 'cheque', 'otro'] as $key) {
+            $this->pago[$key] = $key === $metodo ? $valor : 0;
         }
     }
 
