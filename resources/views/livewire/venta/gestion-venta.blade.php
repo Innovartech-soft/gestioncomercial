@@ -325,31 +325,31 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Efectivo</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.efectivo">
-                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('efectivo')">
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.efectivo" @readonly($pago['cuentaCorriente'])>
+                        <small class="text-info text-decoration-underline d-inline-block mt-1" role="button" style="cursor:pointer" wire:click="aplicarPagoTotal('efectivo')">
                             Pagar total
-                        </button>
+                        </small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Tarjeta</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.tarjeta">
-                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('tarjeta')">
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.tarjeta" @readonly($pago['cuentaCorriente'])>
+                        <small class="text-info text-decoration-underline d-inline-block mt-1" role="button" style="cursor:pointer" wire:click="aplicarPagoTotal('tarjeta')">
                             Pagar total
-                        </button>
+                        </small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Cheque</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.cheque">
-                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('cheque')">
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.cheque" @readonly($pago['cuentaCorriente'])>
+                        <small class="text-info text-decoration-underline d-inline-block mt-1" role="button" style="cursor:pointer" wire:click="aplicarPagoTotal('cheque')">
                             Pagar total
-                        </button>
+                        </small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Otro</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.otro">
-                        <button type="button" class="btn btn-link p-0 text-decoration-underline" wire:click="aplicarPagoTotal('otro')">
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.otro" @readonly($pago['cuentaCorriente'])>
+                        <small class="text-info text-decoration-underline d-inline-block mt-1" role="button" style="cursor:pointer" wire:click="aplicarPagoTotal('otro')">
                             Pagar total
-                        </button>
+                        </small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Total venta</label>

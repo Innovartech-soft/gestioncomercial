@@ -351,6 +351,16 @@ class GestionVenta extends Component
         $this->pago[$metodo] = round($this->totalConIVA, 2);
     }
 
+    public function updatedPagoCuentaCorriente($value)
+    {
+        if ($value) {
+            $this->pago['efectivo'] = 0;
+            $this->pago['tarjeta'] = 0;
+            $this->pago['cheque'] = 0;
+            $this->pago['otro'] = 0;
+        }
+    }
+
     public function render()
     {
         return view('livewire.venta.gestion-venta', [
