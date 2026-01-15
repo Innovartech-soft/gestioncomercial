@@ -348,6 +348,7 @@ class GestionVenta extends Component
         $this->pago['tarjeta'] = 0;
         $this->pago['cheque'] = 0;
         $this->pago['otro'] = 0;
+        $this->observacionesPago = '';
     }
 
     public function aplicarPagoTotal($metodo)
