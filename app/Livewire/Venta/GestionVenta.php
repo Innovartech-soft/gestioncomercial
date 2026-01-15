@@ -36,6 +36,16 @@ class GestionVenta extends Component
     public $listaSeleccionada = null;
     public $listasDescuento = [];
 
+    // Modal de pago
+    public $pago = [
+        'cuentaCorriente' => false,
+        'efectivo' => 0,
+        'tarjeta' => 0,
+        'otro' => 0,
+        'cheque' => 0,
+    ];
+
+    public $observacionesPago = '';
 
     // Totales discriminados
     public $subtotalSinIVA = 0;
@@ -304,6 +314,96 @@ class GestionVenta extends Component
     public function calcularTotal()
     {
         return $this->totalConIVA;
+    }
+
+    public function getTotalPagoProperty()
+    {
+        return collect($this->pago)->only(['efectivo', 'tarjeta', 'otro', 'cheque'])->sum();
+    }
+
+    public function abrirModalPago()
+    {
+        $this->dispatch('show-modal-pago');
+    }
+
+    public function cerrarModalPago()
+    {
+        $this->dispatch('hide-modal-pago');
+    }
+
+    public function confirmarPago()
+    {
+        Log::info('Pago registrado (pendiente de guardado).', [
+            'pago' => $this->pago,
+            'total_pago' => $this->totalPago,
+        ]);
+
+        $this->dispatch('hide-modal-pago');
+    }
+
+    public function aplicarPagoTotal($metodo)
+    {
+        $metodo = (string) $metodo;
+        if (!in_array($metodo, ['efectivo', 'tarjeta', 'cheque', 'otro'], true)) {
+            return;
+        }
+
+        if ($this->pago['cuentaCorriente']) {
+            return;
+        }
+
+        $this->setPagoMetodo($metodo, $this->totalConIVA);
+    }
+
+    public function updatedPagoCuentaCorriente($value)
+    {
+        if ($value) {
+            $this->pago['efectivo'] = 0;
+            $this->pago['tarjeta'] = 0;
+            $this->pago['cheque'] = 0;
+            $this->pago['otro'] = 0;
+        }
+    }
+
+    public function updatedPagoEfectivo($value)
+    {
+        $this->syncPagoInput('efectivo', $value);
+    }
+
+    public function updatedPagoTarjeta($value)
+    {
+        $this->syncPagoInput('tarjeta', $value);
+    }
+
+    public function updatedPagoCheque($value)
+    {
+        $this->syncPagoInput('cheque', $value);
+    }
+
+    public function updatedPagoOtro($value)
+    {
+        $this->syncPagoInput('otro', $value);
+    }
+
+    private function syncPagoInput(string $metodo, $value): void
+    {
+        if ($this->pago['cuentaCorriente']) {
+            $this->pago[$metodo] = 0;
+            return;
+        }
+
+        $valor = is_numeric($value) ? (float) $value : 0;
+        $this->pago[$metodo] = max(0, round($valor, 2));
+    }
+
+    private function setPagoMetodo(string $metodo, $value): void
+    {
+        $valor = is_numeric($value) ? (float) $value : 0;
+        $valor = max(0, round($valor, 2));
+
+        foreach (['efectivo', 'tarjeta', 'cheque', 'otro'] as $key) {
+            $this->pago[$key] = $key === $metodo ? $valor : 0;
+        }
     }
 
     public function render()
