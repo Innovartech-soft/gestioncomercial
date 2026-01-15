@@ -325,7 +325,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Efectivo</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.efectivo" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.efectivo" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -336,7 +336,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Tarjeta</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.tarjeta" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.tarjeta" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -347,7 +347,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Cheque</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.cheque" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.cheque" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -358,7 +358,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Otro</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.otro" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.otro" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
