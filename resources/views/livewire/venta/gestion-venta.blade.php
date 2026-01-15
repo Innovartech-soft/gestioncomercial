@@ -323,14 +323,14 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="pagoCuentaCorriente" wire:model="pago.cuentaCorriente">
+                            <input class="form-check-input" type="checkbox" id="pagoCuentaCorriente" wire:model.live="pago.cuentaCorriente">
                             <label class="form-check-label" for="pagoCuentaCorriente">Cuenta Corriente</label>
                         </div>
                         <small class="text-muted">Marcar si el saldo queda a cuenta corriente.</small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Efectivo</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.efectivo" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.live="pago.efectivo" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -341,7 +341,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Tarjeta</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.tarjeta" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.live="pago.tarjeta" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -352,7 +352,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Cheque</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.cheque" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.live="pago.cheque" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
@@ -363,7 +363,7 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label">Otro</label>
-                        <input type="number" min="0" step="0.01" class="form-control" wire:model="pago.otro" @readonly($pago['cuentaCorriente'])>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.live="pago.otro" @readonly($pago['cuentaCorriente'])>
                         @if($pago['cuentaCorriente'])
                             <small class="text-muted d-inline-block mt-1">Pagar total</small>
                         @else
