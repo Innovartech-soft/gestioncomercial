@@ -193,6 +193,10 @@ class GestionVenta extends Component
 
     public function agregarCarrito()
 {
+    if (! $this->puedeAgregarItems) {
+        return;
+    }
+
     if (!$this->productoSeleccionado) return;
 
     $idProd = $this->productoSeleccionado->id;
@@ -323,6 +327,10 @@ class GestionVenta extends Component
 
     public function abrirModalPago()
     {
+        if (! $this->puedeGenerarVenta) {
+            return;
+        }
+
         $this->dispatch('show-modal-pago');
     }
 
@@ -423,6 +431,18 @@ class GestionVenta extends Component
         }
 
         return $this->totalPago > 0;
+    }
+
+    public function getPuedeAgregarItemsProperty()
+    {
+        return !empty($this->tipoComprobante)
+            && !empty($this->cliente)
+            && !empty($this->vendedor);
+    }
+
+    public function getPuedeGenerarVentaProperty()
+    {
+        return count($this->carrito) > 0;
     }
 
     public function render()

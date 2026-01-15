@@ -204,9 +204,14 @@
                 </div>
             </div>
             
-            <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito">
+            <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito" @disabled(! $this->puedeAgregarItems)>
                 Añadir
             </button>
+            @unless($this->puedeAgregarItems)
+                <small class="text-muted d-block text-center mb-3">
+                    Seleccione tipo de comprobante, cliente y vendedor para añadir al carrito.
+                </small>
+            @endunless
         @endif
 
             <table class="table table-sm align-middle">
@@ -299,7 +304,7 @@
             </div>
 
             {{-- ================== BOTÓN DE GENERAR ================== --}}
-            <button class="btn btn-primary w-100 mt-3" wire:click="abrirModalPago">
+            <button class="btn btn-primary w-100 mt-3" wire:click="abrirModalPago" @disabled(! $this->puedeGenerarVenta)>
                 Generar
             </button>
 
