@@ -36,6 +36,16 @@ class GestionVenta extends Component
     public $listaSeleccionada = null;
     public $listasDescuento = [];
 
+    // Modal de pago
+    public $pago = [
+        'cuentaCorriente' => false,
+        'efectivo' => 0,
+        'tarjeta' => 0,
+        'otro' => 0,
+        'cheque' => 0,
+    ];
+
+    public $observacionesPago = '';
 
     // Totales discriminados
     public $subtotalSinIVA = 0;
@@ -304,6 +314,55 @@ class GestionVenta extends Component
     public function calcularTotal()
     {
         return $this->totalConIVA;
+    }
+
+    public function getTotalPagoProperty()
+    {
+        return collect($this->pago)->only(['efectivo', 'tarjeta', 'otro', 'cheque'])->sum();
+    }
+
+    public function abrirModalPago()
+    {
+        $this->dispatch('show-modal-pago');
+    }
+
+    public function cerrarModalPago()
+    {
+        $this->dispatch('hide-modal-pago');
+    }
+
+    public function confirmarPago()
+    {
+        Log::info('Pago registrado (pendiente de guardado).', [
+            'pago' => $this->pago,
+            'total_pago' => $this->totalPago,
+        ]);
+
+        $this->dispatch('hide-modal-pago');
+    }
+
+    public function aplicarPagoTotal($metodo)
+    {
+        $metodo = (string) $metodo;
+        if (!in_array($metodo, ['efectivo', 'tarjeta', 'cheque', 'otro'], true)) {
+            return;
+        }
+
+        if ($this->pago['cuentaCorriente']) {
+            return;
+        }
+
+        $this->pago[$metodo] = round($this->totalConIVA, 2);
+    }
+
+    public function updatedPagoCuentaCorriente($value)
+    {
+        if ($value) {
+            $this->pago['efectivo'] = 0;
+            $this->pago['tarjeta'] = 0;
+            $this->pago['cheque'] = 0;
+            $this->pago['otro'] = 0;
+        }
     }
 
     public function render()
