@@ -336,6 +336,11 @@ class GestionVenta extends Component
         return collect($this->pago)->only(['efectivo', 'tarjeta', 'otro', 'cheque'])->sum();
     }
 
+    public function getSaldoPendienteProperty()
+    {
+        return round($this->totalConIVA - $this->totalPago, 2);
+    }
+
     public function abrirModalPago()
     {
         if (! $this->puedeGenerarVenta) {
@@ -352,6 +357,10 @@ class GestionVenta extends Component
 
     public function confirmarPago()
     {
+        if (! $this->validarPago()) {
+            return;
+        }
+
         Log::info('Pago registrado (pendiente de guardado).', [
             'pago' => $this->pago,
             'total_pago' => $this->totalPago,
@@ -368,6 +377,7 @@ class GestionVenta extends Component
         $this->pago['cheque'] = 0;
         $this->pago['otro'] = 0;
         $this->observacionesPago = '';
+        $this->resetErrorBag('pago_total');
     }
 
     public function aplicarPagoTotal($metodo)
@@ -392,6 +402,8 @@ class GestionVenta extends Component
             $this->pago['cheque'] = 0;
             $this->pago['otro'] = 0;
         }
+
+        $this->resetErrorBag('pago_total');
     }
 
     public function updatedPagoEfectivo($value)
@@ -423,6 +435,7 @@ class GestionVenta extends Component
 
         $valor = is_numeric($value) ? (float) $value : 0;
         $this->pago[$metodo] = max(0, round($valor, 2));
+        $this->resetErrorBag('pago_total');
     }
 
     private function setPagoMetodo(string $metodo, $value): void
@@ -441,7 +454,28 @@ class GestionVenta extends Component
             return true;
         }
 
-        return $this->totalPago > 0;
+        return $this->totalPago > 0 && $this->pagoCompleto();
+    }
+
+    private function pagoCompleto(): bool
+    {
+        return abs($this->totalConIVA - $this->totalPago) < 0.01;
+    }
+
+    private function validarPago(): bool
+    {
+        $this->resetErrorBag('pago_total');
+
+        if ($this->pago['cuentaCorriente']) {
+            return true;
+        }
+
+        if (! $this->pagoCompleto()) {
+            $this->addError('pago_total', 'El total abonado debe coincidir con el total de la venta.');
+            return false;
+        }
+
+        return true;
     }
 
     public function getPuedeAgregarItemsProperty()
