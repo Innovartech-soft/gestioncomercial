@@ -1,3 +1,4 @@
+<div>
 <div class="container-fluid mt-4">
 
     {{-- FILTROS SUPERIORES --}}
@@ -383,3 +384,4 @@
         });
     </script>
 @endpush
+</div>
