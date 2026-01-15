@@ -298,10 +298,88 @@
             </div>
 
             {{-- ================== BOTÓN DE GENERAR ================== --}}
-            <button class="btn btn-primary w-100 mt-3" wire:click="finalizarVenta">
+            <button class="btn btn-primary w-100 mt-3" wire:click="abrirModalPago">
                 Generar
             </button>
 
         </div>
     </div>
 </div>
+
+<div wire:ignore.self class="modal fade" id="modalPagoVenta" tabindex="-1" aria-labelledby="modalPagoVentaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPagoVentaLabel">Cierre de venta y método de pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" wire:click="cerrarModalPago"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Total venta</label>
+                        <input type="text" class="form-control" value="${{ number_format($totalConIVA, 2) }}" disabled>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Total pago</label>
+                        <input type="text" class="form-control" value="${{ number_format($this->totalPago, 2) }}" disabled>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pagoCuentaCorriente" wire:model="pago.cuentaCorriente">
+                            <label class="form-check-label" for="pagoCuentaCorriente">Cuenta Corriente</label>
+                        </div>
+                        <small class="text-muted">Marcar si el saldo queda a cuenta corriente.</small>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Efectivo</label>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.efectivo">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Tarjeta</label>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.tarjeta">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Cheque</label>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.cheque">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Otro</label>
+                        <input type="number" min="0" step="0.01" class="form-control" wire:model.lazy="pago.otro">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-control" rows="3" wire:model.defer="observacionesPago"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" wire:click="cerrarModalPago">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" wire:click="confirmarPago">
+                    Confirmar pago
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('custom-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalElement = document.getElementById('modalPagoVenta');
+            if (!modalElement) {
+                return;
+            }
+            const modal = new bootstrap.Modal(modalElement);
+
+            window.addEventListener('show-modal-pago', () => {
+                modal.show();
+            });
+
+            window.addEventListener('hide-modal-pago', () => {
+                modal.hide();
+            });
+        });
+    </script>
+@endpush
