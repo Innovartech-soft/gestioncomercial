@@ -381,6 +381,29 @@
                         <input type="text" class="form-control fs-5 fw-bold" value="${{ number_format($this->totalPago, 2) }}" disabled>
                     </div>
                     <div class="col-12">
+                        @if($pago['cuentaCorriente'])
+                            <div class="alert alert-info py-2 mb-0">
+                                Saldo a cuenta corriente: <strong>${{ number_format($totalConIVA, 2) }}</strong>
+                            </div>
+                        @else
+                            @php
+                                $saldoPendiente = $this->saldoPendiente;
+                            @endphp
+                            <div class="alert {{ $saldoPendiente === 0.0 ? 'alert-success' : ($saldoPendiente > 0 ? 'alert-warning' : 'alert-danger') }} py-2 mb-0">
+                                @if($saldoPendiente === 0.0)
+                                    Pago completo.
+                                @elseif($saldoPendiente > 0)
+                                    Falta abonar: <strong>${{ number_format($saldoPendiente, 2) }}</strong>
+                                @else
+                                    Exceso de pago: <strong>${{ number_format(abs($saldoPendiente), 2) }}</strong>
+                                @endif
+                            </div>
+                        @endif
+                        @error('pago_total')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-12">
                         <small class="text-info text-decoration-underline d-inline-block mt-2" role="button" style="cursor:pointer" wire:click="resetPago">
                             Vaciar valores de pago
                         </small>
