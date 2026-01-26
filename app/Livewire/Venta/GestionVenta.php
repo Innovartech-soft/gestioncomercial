@@ -211,13 +211,25 @@ class GestionVenta extends Component
     if (!$this->productoSeleccionado) return;
 
     $idProd = $this->productoSeleccionado->id;
+    $listaId = $this->listaSeleccionada ? (int) $this->listaSeleccionada : null;
+    $descuento = (float) $this->descuento;
+
+    if ($listaId) {
+        $lista = collect($this->listasDescuento)->first(fn($l) => (int) $l->id === $listaId);
+
+        if ($lista) {
+            $descuento = (float) $lista->valor;
+        }
+    }
 
     // Precios base
     $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
     $precioSinIVA  = $this->productoSeleccionado->getPrecioEnPesos();
 
     // Buscar si ya existe en el carrito
-    $index = collect($this->carrito)->search(fn($p) => $p['id'] === $idProd);
+    $index = collect($this->carrito)->search(
+        fn($p) => (string) $p['id'] === (string) $idProd
+    );
 
     // ============================================================
     //   CASO 1: EL PRODUCTO YA ESTÁ EN EL CARRITO → SUMAR CANTIDAD
@@ -228,8 +240,6 @@ class GestionVenta extends Component
         $this->carrito[$index]['cantidad'] += (int) $this->cantidad;
 
         $cantidadTotal = $this->carrito[$index]['cantidad'];
-        $descuento = (float) $this->descuento;
-
         // Recalcular totales
         $subConIVA = $precioConIVA * $cantidadTotal;
         $subSinIVA = $precioSinIVA * $cantidadTotal;
@@ -244,6 +254,7 @@ class GestionVenta extends Component
         $this->carrito[$index]['precio'] = $precioConIVA;
         $this->carrito[$index]['precio_sin_iva'] = $precioSinIVA;
         $this->carrito[$index]['descuento'] = $descuento;
+        $this->carrito[$index]['lista_descuento_id'] = $listaId;
         $this->carrito[$index]['subtotal_con_iva'] = round($subConIVA, 2);
         $this->carrito[$index]['subtotal_sin_iva'] = round($subSinIVA, 2);
         $this->carrito[$index]['subtotal']         = round($subConIVA, 2); // compatibilidad
@@ -257,8 +268,8 @@ class GestionVenta extends Component
         $subtotalConIVA = $precioConIVA * $this->cantidad;
         $subtotalSinIVA = $precioSinIVA * $this->cantidad;
 
-        if ($this->descuento > 0) {
-            $factor = (1 - ($this->descuento / 100));
+        if ($descuento > 0) {
+            $factor = (1 - ($descuento / 100));
             $subtotalConIVA *= $factor;
             $subtotalSinIVA *= $factor;
         }
@@ -269,7 +280,8 @@ class GestionVenta extends Component
             'precio' => $precioConIVA,
             'precio_sin_iva' => $precioSinIVA,
             'cantidad' => (int) $this->cantidad,
-            'descuento' => (float) $this->descuento,
+            'descuento' => $descuento,
+            'lista_descuento_id' => $listaId,
             'subtotal_con_iva' => round($subtotalConIVA, 2),
             'subtotal_sin_iva' => round($subtotalSinIVA, 2),
             'subtotal' => round($subtotalConIVA, 2), // compatibilidad
