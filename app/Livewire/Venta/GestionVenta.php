@@ -214,14 +214,6 @@ class GestionVenta extends Component
     $listaId = $this->listaSeleccionada ? (int) $this->listaSeleccionada : null;
     $descuento = (float) $this->descuento;
 
-    if ($listaId) {
-        $lista = collect($this->listasDescuento)->first(fn($l) => (int) $l->id === $listaId);
-
-        if ($lista) {
-            $descuento = (float) $lista->valor;
-        }
-    }
-
     // Precios base
     $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
     $precioSinIVA  = $this->productoSeleccionado->getPrecioEnPesos();
