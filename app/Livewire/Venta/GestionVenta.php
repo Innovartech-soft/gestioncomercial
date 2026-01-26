@@ -238,6 +238,7 @@ class GestionVenta extends Component
 
         // 1) SUMAR cantidad
         $this->carrito[$index]['cantidad'] += max(1, (int) $this->cantidad);
+$this->carrito[$index]['cantidad'] = $cantidad;
         // 2) REEMPLAZAR lista descuento
         $this->carrito[$index]['lista_descuento_id'] = $listaId;
 

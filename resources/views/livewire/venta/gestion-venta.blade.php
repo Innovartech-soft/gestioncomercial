@@ -5,7 +5,7 @@
     <div class="row mb-4">
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Tipo de Comprobante</label>
-            <select class="form-select" wire:model.live="tipoComprobante">
+            <select class="form-select" wire:model="tipoComprobante">
                 <option value="">Seleccione...</option>
                 @foreach($tipos as $tipo)
                 <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
@@ -15,7 +15,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Cliente</label>
-            <select class="form-select" wire:model.live="cliente">
+            <select class="form-select" wire:model.change="cliente">
                 <option value="">Seleccione...</option>
                 @foreach($clientes as $cliente)
                 <option value="{{ $cliente->id }}">{{ $cliente->razon_social ?? $cliente->nombre }}</option>
@@ -25,7 +25,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Vendedor</label>
-            <select class="form-select" wire:model.live="vendedor">
+            <select class="form-select" wire:model="vendedor">
                 <option value="">Seleccione...</option>
                 @foreach($vendedores as $vendedor)
                     <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
@@ -41,7 +41,7 @@
 
             <div class="row mb-3">
                 <div class="col-4">
-                    <select class="form-select" wire:model.live="filtroMarca">
+                    <select class="form-select" wire:model="filtroMarca">
                         <option value="">Marca...</option>
                         @foreach($marcas as $marca)
                             <option value="{{ $marca->id }}">{{ $marca->nombre }}</option>
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model.live="filtroProveedor">
+                    <select class="form-select" wire:model="filtroProveedor">
                         <option value="">Proveedor...</option>
                         @foreach($proveedores as $proveedor)
                             <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model.live="filtroRubro">
+                    <select class="form-select" wire:model="filtroRubro">
                         <option value="">Rubro...</option>
                         @foreach($rubros as $rubro)
                             <option value="{{ $rubro->id }}">{{ $rubro->nombre }}</option>
@@ -179,12 +179,12 @@
         {{-- CANTIDAD + LISTA DE DESCUENTO --}}
         <div class="row mb-3">
             <div class="col-6">
-                <input type="number" min="1" class="form-control" wire:model.blur="cantidad">
+                <input type="number" min="1" class="form-control" wire:model="cantidad">
                 <small>Cantidad</small>
             </div>
 
             <div class="col-6">
-                <select class="form-select" wire:model.live="listaSeleccionada">
+                <select class="form-select" wire:model.change="listaSeleccionada">
                     <option value="">Lista descuento...</option>
 
                     @foreach($listasDescuento as $lista)
@@ -232,7 +232,7 @@
                         <input type="number"
                             min="1"
                             class="form-control form-control-sm"
-                            wire:model.blur="carrito.{{ $index }}.cantidad"
+                            wire:model.lazy="carrito.{{ $index }}.cantidad"
                             wire:change="actualizarItem({{ $index }})">
                     </td>
 
@@ -241,14 +241,14 @@
                         <input type="number"
                             step="0.1"
                             class="form-control form-control-sm"
-                            wire:model.blur="carrito.{{ $index }}.precio"
+                            wire:model.lazy="carrito.{{ $index }}.precio"
                             wire:change="actualizarItem({{ $index }})">
                     </td>
 
                     {{-- LISTA DESCUENTO --}}
                     <td>
                         <select class="form-select form-select-sm"
-                            wire:model.blur="carrito.{{ $index }}.lista_descuento_id"
+                            wire:model.lazy="carrito.{{ $index }}.lista_descuento_id"
                             wire:change="actualizarItem({{ $index }})">
                             <option value="">Sin lista</option>
                             @foreach($listasDescuento as $lista)
@@ -284,7 +284,7 @@
                     <input type="number"
                         min="0" max="100" step="0.1"
                         class="form-control form-control-sm"
-                        wire:model.blur="descuento_total"
+                        wire:model.lazy="descuento_total"
                         name="descuento_total">
                 </div>
             </div>
@@ -421,7 +421,7 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label">Observaciones</label>
-                        <textarea class="form-control" rows="3" wire:model.blur="observacionesPago"></textarea>
+                        <textarea class="form-control" rows="3" wire:model.defer="observacionesPago"></textarea>
                     </div>
                 </div>
             </div>
@@ -456,3 +456,4 @@
         });
     </script>
 @endpush
+
