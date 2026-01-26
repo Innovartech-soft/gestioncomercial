@@ -93,17 +93,17 @@ export class DashboardComponent implements OnInit {
   productos: Producto[] = [];
   productosToShow: Producto[] = [];
   selectedSearchProductId: number;
-  selectedProduct: Producto;
+  selectedProduct: Producto | null;
   register: RegisterDto;
   confirmationMessage: string = "";
   registerId: number;
   optionsModal: NgbActiveModal;
 
   //productos
-  cantidad: number = 1;
+  cantidad: number | null = null;
   precio: string = "";
   ganancia: number = 0;
-  descuento: number = 0;
+  descuento: number | null = null;
   subtotal: string = "";
   precioXUnidad: string = "";
   test = false;
@@ -293,12 +293,15 @@ export class DashboardComponent implements OnInit {
 
   onProductSelected() {
     if (this.selectedSearchProductId) {
+      this.cantidad = 1;
       this.descuento = 0;
       const foundProduct = this.productos.find(prod => prod.id == this.selectedSearchProductId);
       this.selectedProduct = { ...foundProduct };
       const foundMarca = this.marcas.find(mar => mar.id == this.selectedProduct.id_marca);
       this.selectedProduct.nametoShow = foundMarca ? foundMarca.nombre + " - " + this.selectedProduct.nombre : this.selectedProduct.nombre;
       this.calculateProductPrice();
+    } else {
+      this.resetSelectedProductDetails();
     }
   }
 
@@ -344,7 +347,7 @@ export class DashboardComponent implements OnInit {
 
     if (this.selectedProduct) {
       const subtotal = this.getCalculatedPrice(this.selectedProduct.precio_costo_final,
-        this.cantidad, this.ganancia, this.descuento);
+        this.cantidad ?? 0, this.ganancia, this.descuento ?? 0);
       this.subtotal = subtotal.toFixed(1)
     }
   }
@@ -452,10 +455,10 @@ export class DashboardComponent implements OnInit {
   addProductClick() {
     let product = new ProductDto();
     product.id = this.selectedProduct.id;
-    product.cantidad = this.cantidad;
+    product.cantidad = this.cantidad ?? 0;
     product.descripcion = this.selectedProduct.nombre;
     product.idLista = this.selectedCliente.id_lista;
-    product.descuentoPorcentual = this.descuento;
+    product.descuentoPorcentual = this.descuento ?? 0;
     product.descuentoNominal = 0;
     product.precioUnitarioOriginal = this.selectedProduct.precio_costo_final;
     product.precioUnitario = this.selectedProduct.precio_costo_final;
@@ -512,8 +515,16 @@ export class DashboardComponent implements OnInit {
 
   resetProduct() {
     this.selectedSearchProductId = null;
-    this.cantidad = 1;
-    this.descuento = 0;
+    this.resetSelectedProductDetails();
+  }
+
+  resetSelectedProductDetails() {
+    this.selectedProduct = null;
+    this.cantidad = null;
+    this.descuento = null;
+    this.precio = "";
+    this.precioXUnidad = "";
+    this.subtotal = "";
   }
 
   updateProductValues(row: ProductDto) {
@@ -840,8 +851,6 @@ export class DashboardComponent implements OnInit {
     //this.content = replaceText
   }
 }
-
-
 
 
 
