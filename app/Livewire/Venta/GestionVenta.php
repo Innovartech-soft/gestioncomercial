@@ -31,8 +31,8 @@ class GestionVenta extends Component
     // Carrito
     public $carrito = [];
     public $productoSeleccionado = null;
-    public $cantidad = 1;
-    public $descuento = 0;
+    public $cantidad = null;
+    public $descuento = null;
     public $listaSeleccionada = null;
     public $listasDescuento = [];
 
@@ -53,8 +53,8 @@ class GestionVenta extends Component
     public $totalConIVA = 0;
 
     protected $rules = [
-        'cantidad' => 'integer|min:1',
-        'descuento' => 'numeric|min:0'
+        'cantidad' => 'nullable|integer|min:1',
+        'descuento' => 'nullable|numeric|min:0'
     ];
 
     public function mount()
@@ -187,6 +187,11 @@ class GestionVenta extends Component
         if (!$value) {
             return;
         }
+
+        if (! $this->productoSeleccionado) {
+            $this->descuento = null;
+            return;
+        }
         Log::info('Lista seleccionada - nombre: ' . $value);
         // FORZAR que la comparación no falle por tipo
         $lista = collect($this->listasDescuento)
@@ -277,12 +282,17 @@ class GestionVenta extends Component
     }
 
     // Reset selección
-    $this->productoSeleccionado = null;
-    $this->cantidad = 1;
-    $this->descuento = 0;
+    $this->resetSeleccionProducto();
 
     // Recalcular totales generales
     $this->actualizarTotales();
+    }
+
+    public function resetSeleccionProducto()
+    {
+        $this->productoSeleccionado = null;
+        $this->cantidad = null;
+        $this->descuento = null;
     }
 
     public function actualizarItem($index)

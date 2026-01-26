@@ -149,37 +149,38 @@
         {{-- ================== DERECHA ================== --}}
         <div class="col-12 col-lg-6 p-3 border rounded">
 
-            @if($productoSeleccionado)
-
             {{-- NOMBRE DEL PRODUCTO --}}
             <div class="text-center mb-2">
-                <h5 class="fw-bold">{{ $productoSeleccionado->nombre }}</h5>
+                <h5 class="fw-bold">{{ $productoSeleccionado?->nombre ?? '' }}</h5>
             </div>
 
             {{-- PRECIO ACTUAL --}} 
             <div class="text-center mb-3">
+                @if($productoSeleccionado)
+                    @if($productoSeleccionado->isOffer())
+                        {{-- Precio normal tachado --}}
+                        <div class="text-muted" style="text-decoration: line-through;">
+                            ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                        </div>
 
-                @if($productoSeleccionado->isOffer())
-                    {{-- Precio normal tachado --}}
-                    <div class="text-muted" style="text-decoration: line-through;">
-                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
-                    </div>
-
-                    {{-- Precio con oferta --}}
-                    <div class="fw-bold text-success" style="font-size: 1.2rem;">
-                        ${{ number_format($productoSeleccionado->precio_costo_oferta, 1) }}
-                    </div>
+                        {{-- Precio con oferta --}}
+                        <div class="fw-bold text-success" style="font-size: 1.2rem;">
+                            ${{ number_format($productoSeleccionado->precio_costo_oferta, 1) }}
+                        </div>
+                    @else
+                        <div class="fw-bold" style="font-size: 1.2rem;">
+                            ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                        </div>
+                    @endif
                 @else
-                    <div class="fw-bold" style="font-size: 1.2rem;">
-                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
-                    </div>
+                    <div class="text-muted" style="font-size: 1.2rem;">&nbsp;</div>
                 @endif
             </div>
 
             {{-- LISTA DE DESCUENTOS --}}
             <div class="row mb-3">
                 <div class="col-4">
-                    <input type="number" min="1" class="form-control" wire:model="cantidad">
+                    <input type="number" min="1" class="form-control" wire:model="cantidad" @disabled(! $productoSeleccionado)>
                     <small>Cantidad</small>
                 </div>
                 <div class="col-4">
@@ -188,11 +189,12 @@
                         class="form-control" 
                         wire:model="descuento"
                         wire:key="descuento-{{ $listaSeleccionada }}-{{ $productoSeleccionado->id ?? 0 }}"
+                        @disabled(! $productoSeleccionado)
                     >
                     <small>Descuento %</small>
                 </div>
                 <div class="col-4">
-                    <select class="form-select" wire:model.change="listaSeleccionada">
+                    <select class="form-select" wire:model.change="listaSeleccionada" @disabled(! $productoSeleccionado)>
                         <option value="">Lista descuento...</option>
 
                         @foreach($listasDescuento as $lista)
@@ -204,15 +206,16 @@
                 </div>
             </div>
             
-            <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito" @disabled(! $this->puedeAgregarItems)>
-                Añadir
-            </button>
-            @unless($this->puedeAgregarItems)
-                <small class="text-muted d-block text-center mb-3">
-                    Seleccione tipo de comprobante, cliente y vendedor para añadir al carrito.
-                </small>
-            @endunless
-        @endif
+            @if($productoSeleccionado)
+                <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito" @disabled(! $this->puedeAgregarItems)>
+                    Añadir
+                </button>
+                @unless($this->puedeAgregarItems)
+                    <small class="text-muted d-block text-center mb-3">
+                        Seleccione tipo de comprobante, cliente y vendedor para añadir al carrito.
+                    </small>
+                @endunless
+            @endif
 
             <table class="table table-sm align-middle">
     <thead>
