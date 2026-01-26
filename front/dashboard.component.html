@@ -294,11 +294,11 @@
               </ng-select>
               <small class="text-muted">* Presione la tecla [F8] para acceder rápidamente a la búsqueda</small>
             </div>            
-            <div class="row py-4 mt-2">
+            <div class="row py-4 mt-2" *ngIf="selectedSearchProductId">
               
               <div class="row">
                 <div class="col-4 d-flex align-items-center">
-                  {{selectedProduct?.nametoShow}}
+                  {{selectedProduct.nametoShow}}
                 </div>
                 <div class="col-4 d-flex align-items-center">
                   Precio: $ {{precio}}
@@ -309,7 +309,7 @@
                     <label for="cantidad" class="col-5 col-form-label">Cantidad:</label>
                     <div class="col-4 px-0 d-flex justify-content-start">
                       <input class="form-control" name="cantidad" type="number" placeholder="Cantidad" 
-                      [(ngModel)]="cantidad" (change)="cantidadChange()" min="0" [disabled]="!selectedSearchProductId" onkeypress="return event.charCode != 44"/>
+                      [(ngModel)]="cantidad" (change)="cantidadChange()" min="0" onkeypress="return event.charCode != 44"/>
                     </div>
                   </div>
                 </div>
@@ -325,7 +325,7 @@
                               <p>%</p>
                           </button>
                           <input class="form-control" name="descuento" type="number" 
-                          [(ngModel)]="descuento" (change)="descuentoChange()" min="0" [disabled]="!selectedSearchProductId" onkeypress="return event.charCode != 44"/>
+                          [(ngModel)]="descuento" (change)="descuentoChange()" min="0" onkeypress="return event.charCode != 44"/>
                         </div>  
                       </div>
                     </div>
@@ -336,7 +336,7 @@
                 </div>
 
                 <div class="col-4 d-flex align-items-center justify-content-start">
-                  <button class="btn btn-primary" *ngIf="selectedSearchProductId" [disabled]="!selectedCliente" (click)="addProductClick()">Agregar</button>
+                  <button class="btn btn-primary" [disabled]="!selectedCliente" (click)="addProductClick()">Agregar</button>
                 </div>
                 
               </div>
