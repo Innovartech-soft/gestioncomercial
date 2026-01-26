@@ -213,8 +213,14 @@ class GestionVenta extends Component
         return;
     }
 
+<<<<<<< Updated upstream
     $idProd  = (int) $this->productoSeleccionado->id;
     $listaId = $this->listaSeleccionada ? (int) $this->listaSeleccionada : null;
+=======
+    $idProd = $this->productoSeleccionado->id;
+    $listaId = $this->listaSeleccionada ? (int) $this->listaSeleccionada : null;
+    $descuento = (float) $this->descuento;
+>>>>>>> Stashed changes
 
     // Precio base
     $precioConIVA = (float) $this->productoSeleccionado->PrecioPesosConIva;
@@ -229,7 +235,13 @@ class GestionVenta extends Component
     $descuentoLista = max(0, min(100, $listaValor));
 
     // Buscar si ya existe en el carrito
+<<<<<<< Updated upstream
     $index = collect($this->carrito)->search(fn($p) => (string)$p['id'] === (string)$idProd);
+=======
+    $index = collect($this->carrito)->search(
+        fn($p) => (string) $p['id'] === (string) $idProd
+    );
+>>>>>>> Stashed changes
 
     // ============================
     // CASO 1: ya existe
@@ -242,9 +254,14 @@ $this->carrito[$index]['cantidad'] = $cantidad;
         // 2) REEMPLAZAR lista descuento
         $this->carrito[$index]['lista_descuento_id'] = $listaId;
 
+<<<<<<< Updated upstream
         $cantidadTotal = (int) $this->carrito[$index]['cantidad'];
 
         // 3) Recalcular subtotales con la NUEVA lista
+=======
+        $cantidadTotal = $this->carrito[$index]['cantidad'];
+        // Recalcular totales
+>>>>>>> Stashed changes
         $subConIVA = $precioConIVA * $cantidadTotal;
         $subSinIVA = $precioSinIVA * $cantidadTotal;
 
@@ -257,7 +274,12 @@ $this->carrito[$index]['cantidad'] = $cantidad;
         // Si querés que el precio se actualice al vigente:
         $this->carrito[$index]['precio'] = $precioConIVA;
         $this->carrito[$index]['precio_sin_iva'] = $precioSinIVA;
+<<<<<<< Updated upstream
 
+=======
+        $this->carrito[$index]['descuento'] = $descuento;
+        $this->carrito[$index]['lista_descuento_id'] = $listaId;
+>>>>>>> Stashed changes
         $this->carrito[$index]['subtotal_con_iva'] = round($subConIVA, 2);
         $this->carrito[$index]['subtotal_sin_iva'] = round($subSinIVA, 2);
         $this->carrito[$index]['subtotal']         = round($subConIVA, 2);
@@ -272,10 +294,17 @@ $this->carrito[$index]['cantidad'] = $cantidad;
         $subConIVA = $precioConIVA * $cantidad;
         $subSinIVA = $precioSinIVA * $cantidad;
 
+<<<<<<< Updated upstream
         if ($descuentoLista > 0) {
             $factor = 1 - ($descuentoLista / 100);
             $subConIVA *= $factor;
             $subSinIVA *= $factor;
+=======
+        if ($descuento > 0) {
+            $factor = (1 - ($descuento / 100));
+            $subtotalConIVA *= $factor;
+            $subtotalSinIVA *= $factor;
+>>>>>>> Stashed changes
         }
 
         $this->carrito[] = [
@@ -283,6 +312,7 @@ $this->carrito[$index]['cantidad'] = $cantidad;
             'nombre' => $this->productoSeleccionado->nombre,
             'precio' => $precioConIVA,
             'precio_sin_iva' => $precioSinIVA,
+<<<<<<< Updated upstream
             'cantidad' => $cantidad,
             'lista_descuento_id' => $listaId,
             'subtotal_con_iva' => round($subConIVA, 2),
@@ -295,13 +325,31 @@ $this->carrito[$index]['cantidad'] = $cantidad;
     $this->productoSeleccionado = null;
     $this->cantidad = 1;
     $this->listaSeleccionada = null;
+=======
+            'cantidad' => (int) $this->cantidad,
+            'descuento' => $descuento,
+            'lista_descuento_id' => $listaId,
+            'subtotal_con_iva' => round($subtotalConIVA, 2),
+            'subtotal_sin_iva' => round($subtotalSinIVA, 2),
+            'subtotal' => round($subtotalConIVA, 2), // compatibilidad
+        ];
+    }
+
+    // Reset selección
+    $this->productoSeleccionado = null;
+    $this->cantidad = 1;
+    $this->descuento = 0;
+>>>>>>> Stashed changes
 
     $this->actualizarTotales();
 }
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     public function actualizarItem($index)
 {
     if (!isset($this->carrito[$index])) return;

@@ -5,7 +5,7 @@
     <div class="row mb-4">
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Tipo de Comprobante</label>
-            <select class="form-select" wire:model="tipoComprobante">
+            <select class="form-select" wire:model.live="tipoComprobante">
                 <option value="">Seleccione...</option>
                 @foreach($tipos as $tipo)
                 <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
@@ -15,7 +15,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Cliente</label>
-            <select class="form-select" wire:model.change="cliente">
+            <select class="form-select" wire:model.live="cliente">
                 <option value="">Seleccione...</option>
                 @foreach($clientes as $cliente)
                 <option value="{{ $cliente->id }}">{{ $cliente->razon_social ?? $cliente->nombre }}</option>
@@ -25,7 +25,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Vendedor</label>
-            <select class="form-select" wire:model="vendedor">
+            <select class="form-select" wire:model.live="vendedor">
                 <option value="">Seleccione...</option>
                 @foreach($vendedores as $vendedor)
                     <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
@@ -41,7 +41,7 @@
 
             <div class="row mb-3">
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroMarca">
+                    <select class="form-select" wire:model.live="filtroMarca">
                         <option value="">Marca...</option>
                         @foreach($marcas as $marca)
                             <option value="{{ $marca->id }}">{{ $marca->nombre }}</option>
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroProveedor">
+                    <select class="form-select" wire:model.live="filtroProveedor">
                         <option value="">Proveedor...</option>
                         @foreach($proveedores as $proveedor)
                             <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroRubro">
+                    <select class="form-select" wire:model.live="filtroRubro">
                         <option value="">Rubro...</option>
                         @foreach($rubros as $rubro)
                             <option value="{{ $rubro->id }}">{{ $rubro->nombre }}</option>
@@ -149,6 +149,7 @@
         {{-- ================== DERECHA ================== --}}
 <div class="col-12 col-lg-6 p-3 border rounded">
 
+<<<<<<< Updated upstream
     @if($productoSeleccionado)
 
         {{-- NOMBRE DEL PRODUCTO --}}
@@ -164,6 +165,53 @@
                 <div class="text-muted" style="text-decoration: line-through;">
                     ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
                 </div>
+=======
+            @if($productoSeleccionado)
+
+            {{-- NOMBRE DEL PRODUCTO --}}
+            <div class="text-center mb-2">
+                <h5 class="fw-bold">{{ $productoSeleccionado->nombre }}</h5>
+            </div>
+
+            {{-- PRECIO ACTUAL --}} 
+            <div class="text-center mb-3">
+
+                @if($productoSeleccionado->isOffer())
+                    {{-- Precio normal tachado --}}
+                    <div class="text-muted" style="text-decoration: line-through;">
+                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                    </div>
+
+                    {{-- Precio con oferta --}}
+                    <div class="fw-bold text-success" style="font-size: 1.2rem;">
+                        ${{ number_format($productoSeleccionado->precio_costo_oferta, 1) }}
+                    </div>
+                @else
+                    <div class="fw-bold" style="font-size: 1.2rem;">
+                        ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
+                    </div>
+                @endif
+            </div>
+
+            {{-- LISTA DE DESCUENTOS --}}
+            <div class="row mb-3">
+                <div class="col-4">
+                    <input type="number" min="1" class="form-control" wire:model="cantidad">
+                    <small>Cantidad</small>
+                </div>
+                <div class="col-4">
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        wire:model="descuento"
+                        wire:key="descuento-{{ $listaSeleccionada }}-{{ $productoSeleccionado->id ?? 0 }}"
+                    >
+                    <small>Descuento %</small>
+                </div>
+                <div class="col-4">
+                    <select class="form-select" wire:model.live="listaSeleccionada">
+                        <option value="">Lista descuento...</option>
+>>>>>>> Stashed changes
 
                 {{-- Precio con oferta --}}
                 <div class="fw-bold text-success" style="font-size: 1.2rem;">
@@ -173,8 +221,22 @@
                 <div class="fw-bold" style="font-size: 1.2rem;">
                     ${{ number_format($productoSeleccionado->precio_pesos_con_iva, 2) }}
                 </div>
+<<<<<<< Updated upstream
             @endif
         </div>
+=======
+            </div>
+            
+            <button class="btn btn-success w-100 mb-3" wire:click="agregarCarrito" @disabled(! $this->puedeAgregarItems)>
+                Añadir
+            </button>
+            @unless($this->puedeAgregarItems)
+                <small class="text-muted d-block text-center mb-3">
+                    Seleccione tipo de comprobante, cliente y vendedor para añadir al carrito.
+                </small>
+            @endunless
+        @endif
+>>>>>>> Stashed changes
 
         {{-- CANTIDAD + LISTA DE DESCUENTO --}}
         <div class="row mb-3">
@@ -187,6 +249,7 @@
                 <select class="form-select" wire:model.change="listaSeleccionada">
                     <option value="">Lista descuento...</option>
 
+<<<<<<< Updated upstream
                     @foreach($listasDescuento as $lista)
                         <option value="{{ $lista->id }}">
                             {{ $lista->nombre }} ({{ $lista->valor }}%)
@@ -206,6 +269,34 @@
                 Seleccione tipo de comprobante, cliente y vendedor para añadir al carrito.
             </small>
         @endunless
+=======
+            {{-- CAMPO CANTIDAD --}}
+            <td>
+                <input type="number"
+                    min="1"
+                    class="form-control form-control-sm"
+                    wire:model.blur="carrito.{{ $index }}.cantidad"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+
+            {{-- PRECIO UNITARIO (editable) --}}
+            <td>
+                <input type="number"
+                    step="0.1"
+                    class="form-control form-control-sm"
+                    wire:model.blur="carrito.{{ $index }}.precio"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+
+            {{-- CAMPO DESCUENTO --}}
+            <td>
+                <input type="number"
+                    min="0" max="100"
+                    class="form-control form-control-sm"
+                    wire:model.blur="carrito.{{ $index }}.descuento"
+                    wire:change="actualizarItem({{ $index }})">
+            </td>
+>>>>>>> Stashed changes
 
     @endif
 
