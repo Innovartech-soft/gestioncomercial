@@ -41,10 +41,10 @@
               <a href="{{ url('venta/index') }}" class="nav-link {{ active_class(['venta/index']) }}">Listado de Ventas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexcerradas') }}" class="nav-link {{ active_class(['venta/indexcerradas']) }}">Listado de Cerradas</a>
+              <a href="{{ route('venta.indexCerradas') }}" class="nav-link {{ active_class(['venta/indexCerradas']) }}">Listado de Cerradas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexanuladas') }}" class="nav-link {{ active_class(['venta/indexanuladas']) }}">Listado de Anuladas</a>
+              <a href="{{ route('venta.indexAnuladas') }}" class="nav-link {{ active_class(['venta/indexAnuladas']) }}">Listado de Anuladas</a>
             </li>
           </ul>
         </div>
