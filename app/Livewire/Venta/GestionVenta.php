@@ -35,6 +35,7 @@ class GestionVenta extends Component
     public $descuento = null;
     public $listaSeleccionada = null;
     public $listasDescuento = [];
+    public $stockAviso = null;
 
     // Modal de pago
     public $pago = [
@@ -54,7 +55,7 @@ class GestionVenta extends Component
 
     protected $rules = [
         'cantidad' => 'nullable|integer|min:1',
-        'descuento' => 'nullable|numeric|min:0'
+        'descuento' => 'nullable|numeric|min:0|max:100'
     ];
 
     public function mount()
@@ -166,25 +167,19 @@ class GestionVenta extends Component
     {
         $this->productoSeleccionado = Producto::find($id);
         $this->cantidad = 1;
+        $this->stockAviso = null;
         Log::info('Producto seleccionado - id: ' . $id);
-        if ($this->listaSeleccionada) {
 
-            $idLista = (int) $this->listaSeleccionada;
+        $this->descuento = $this->resolveDescuentoSeleccionado();
 
-            $lista = collect($this->listasDescuento)->first(fn($l) => (string)$l->id === (string)$this->listaSeleccionada);
-
-            if ($lista) {
-                $this->descuento = (float) $lista->valor;
-            }
-        } else {
-            $this->descuento = 0;
-        }
+        $this->actualizarAvisoStock();
     }
 
 
     public function updatedListaSeleccionada($value)
     {
         if (!$value) {
+            $this->descuento = $this->sanitizePorcentaje($this->descuento);
             return;
         }
 
@@ -193,16 +188,25 @@ class GestionVenta extends Component
             return;
         }
         Log::info('Lista seleccionada - nombre: ' . $value);
-        // FORZAR que la comparación no falle por tipo
-        $lista = collect($this->listasDescuento)
-                    ->first(function($l) use ($value) {
-                        return (string)$l->id === (string)$value;
-                    });
 
-        if ($lista) {
-            $this->descuento = floatval($lista->valor);
-            Log::info('Lista valor - precio: ' . $this->descuento);
+        $this->descuento = $this->resolveDescuentoSeleccionado();
+        Log::info('Lista valor - precio: ' . $this->descuento);
+    }
+
+    public function updatedDescuento($value)
+    {
+        if ($this->listaSeleccionada) {
+            $this->descuento = $this->resolveDescuentoSeleccionado();
+            return;
         }
+
+        $this->descuento = $this->sanitizePorcentaje($value);
+    }
+
+    public function updatedCantidad($value)
+    {
+        $this->cantidad = max(0, (int) $value);
+        $this->actualizarAvisoStock();
     }
 
 
@@ -216,6 +220,8 @@ class GestionVenta extends Component
     if (!$this->productoSeleccionado) return;
 
     $idProd = $this->productoSeleccionado->id;
+    $cantidadAgregar = max(1, (int) $this->cantidad);
+    $descuentoAplicado = $this->resolveDescuentoSeleccionado();
 
     // Precios base
     $precioConIVA = $this->productoSeleccionado->PrecioPesosConIva;
@@ -230,10 +236,10 @@ class GestionVenta extends Component
     if ($index !== false) {
 
         // Sumar cantidad
-        $this->carrito[$index]['cantidad'] += (int) $this->cantidad;
+        $this->carrito[$index]['cantidad'] += $cantidadAgregar;
 
         $cantidadTotal = $this->carrito[$index]['cantidad'];
-        $descuento = (float) $this->descuento;
+        $descuento = $descuentoAplicado;
 
         // Recalcular totales
         $subConIVA = $precioConIVA * $cantidadTotal;
@@ -259,11 +265,11 @@ class GestionVenta extends Component
     // ============================================================
     else {
 
-        $subtotalConIVA = $precioConIVA * $this->cantidad;
-        $subtotalSinIVA = $precioSinIVA * $this->cantidad;
+        $subtotalConIVA = $precioConIVA * $cantidadAgregar;
+        $subtotalSinIVA = $precioSinIVA * $cantidadAgregar;
 
-        if ($this->descuento > 0) {
-            $factor = (1 - ($this->descuento / 100));
+        if ($descuentoAplicado > 0) {
+            $factor = (1 - ($descuentoAplicado / 100));
             $subtotalConIVA *= $factor;
             $subtotalSinIVA *= $factor;
         }
@@ -273,13 +279,15 @@ class GestionVenta extends Component
             'nombre' => $this->productoSeleccionado->nombre,
             'precio' => $precioConIVA,
             'precio_sin_iva' => $precioSinIVA,
-            'cantidad' => (int) $this->cantidad,
-            'descuento' => (float) $this->descuento,
+            'cantidad' => $cantidadAgregar,
+            'descuento' => $descuentoAplicado,
             'subtotal_con_iva' => round($subtotalConIVA, 2),
             'subtotal_sin_iva' => round($subtotalSinIVA, 2),
             'subtotal' => round($subtotalConIVA, 2), // compatibilidad
         ];
     }
+
+    $this->actualizarAvisoStock($cantidadAgregar);
 
     // Reset selección
     $this->resetSeleccionProducto();
@@ -291,8 +299,9 @@ class GestionVenta extends Component
     public function resetSeleccionProducto()
     {
         $this->productoSeleccionado = null;
-        $this->cantidad = null;
-        $this->descuento = null;
+        $this->cantidad = 0;
+        $this->descuento = 0;
+        $this->stockAviso = null;
     }
 
     public function actualizarItem($index)
@@ -323,6 +332,57 @@ class GestionVenta extends Component
 
     // Recalcular totales generales
     $this->actualizarTotales();
+    }
+
+    private function resolveDescuentoSeleccionado(): float
+    {
+        if (! $this->listaSeleccionada) {
+            return $this->sanitizePorcentaje($this->descuento);
+        }
+
+        $lista = collect($this->listasDescuento)
+            ->first(fn($l) => (string) $l->id === (string) $this->listaSeleccionada);
+
+        if (! $lista) {
+            return $this->sanitizePorcentaje($this->descuento);
+        }
+
+        return $this->sanitizePorcentaje($lista->valor);
+    }
+
+    private function sanitizePorcentaje($value): float
+    {
+        $porcentaje = is_numeric($value) ? (float) $value : 0.0;
+
+        return round(max(0, min(100, $porcentaje)), 2);
+    }
+
+    private function actualizarAvisoStock(?int $cantidadOverride = null): void
+    {
+        if (! $this->productoSeleccionado) {
+            $this->stockAviso = null;
+            return;
+        }
+
+        $stock = (int) ($this->productoSeleccionado->stock ?? 0);
+        $cantidadEvaluada = $cantidadOverride ?? max(0, (int) $this->cantidad);
+
+        if ($stock <= 0) {
+            $this->stockAviso = 'Producto sin stock disponible. Puede continuar, pero se sugiere revisar reposición.';
+            return;
+        }
+
+        if ($cantidadEvaluada > $stock) {
+            $this->stockAviso = "La cantidad solicitada ({$cantidadEvaluada}) supera el stock actual ({$stock}).";
+            return;
+        }
+
+        if ($stock <= 3) {
+            $this->stockAviso = "Stock bajo: quedan {$stock} unidad(es) disponibles.";
+            return;
+        }
+
+        $this->stockAviso = null;
     }
 
     public function eliminarItem($index)

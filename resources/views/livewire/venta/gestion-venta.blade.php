@@ -5,7 +5,7 @@
     <div class="row mb-4">
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Tipo de Comprobante</label>
-            <select class="form-select" wire:model="tipoComprobante">
+            <select class="form-select" wire:model.live="tipoComprobante">
                 <option value="">Seleccione...</option>
                 @foreach($tipos as $tipo)
                 <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
@@ -15,7 +15,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Cliente</label>
-            <select class="form-select" wire:model.change="cliente">
+            <select class="form-select" wire:model.live="cliente">
                 <option value="">Seleccione...</option>
                 @foreach($clientes as $cliente)
                 <option value="{{ $cliente->id }}">{{ $cliente->razon_social ?? $cliente->nombre }}</option>
@@ -25,7 +25,7 @@
 
         <div class="col-12 col-lg-4">
             <label class="form-label fw-bold">Vendedor</label>
-            <select class="form-select" wire:model="vendedor">
+            <select class="form-select" wire:model.live="vendedor">
                 <option value="">Seleccione...</option>
                 @foreach($vendedores as $vendedor)
                     <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
@@ -41,7 +41,7 @@
 
             <div class="row mb-3">
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroMarca">
+                    <select class="form-select" wire:model.live="filtroMarca">
                         <option value="">Marca...</option>
                         @foreach($marcas as $marca)
                             <option value="{{ $marca->id }}">{{ $marca->nombre }}</option>
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroProveedor">
+                    <select class="form-select" wire:model.live="filtroProveedor">
                         <option value="">Proveedor...</option>
                         @foreach($proveedores as $proveedor)
                             <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="col-4">
-                    <select class="form-select" wire:model="filtroRubro">
+                    <select class="form-select" wire:model.live="filtroRubro">
                         <option value="">Rubro...</option>
                         @foreach($rubros as $rubro)
                             <option value="{{ $rubro->id }}">{{ $rubro->nombre }}</option>
@@ -154,6 +154,12 @@
                 <h5 class="fw-bold">{{ $productoSeleccionado?->nombre ?? '' }}</h5>
             </div>
 
+            @if($stockAviso)
+                <div class="alert alert-warning py-2 px-3 mb-3" role="alert">
+                    <small class="fw-semibold">Aviso de stock:</small> {{ $stockAviso }}
+                </div>
+            @endif
+
             {{-- PRECIO ACTUAL --}} 
             <div class="text-center mb-3">
                 @if($productoSeleccionado)
@@ -180,21 +186,23 @@
             {{-- LISTA DE DESCUENTOS --}}
             <div class="row mb-3">
                 <div class="col-4">
-                    <input type="number" min="1" class="form-control" wire:model="cantidad" @disabled(! $productoSeleccionado)>
+                    <input type="number" min="1" class="form-control" wire:model.live="cantidad" @disabled(! $productoSeleccionado)>
                     <small>Cantidad</small>
                 </div>
                 <div class="col-4">
                     <input 
                         type="number" 
+                        min="0"
+                        max="100"
                         class="form-control" 
-                        wire:model="descuento"
+                        wire:model.live="descuento"
                         wire:key="descuento-{{ $listaSeleccionada }}-{{ $productoSeleccionado->id ?? 0 }}"
-                        @disabled(! $productoSeleccionado)
+                        @disabled(! $productoSeleccionado || $listaSeleccionada)
                     >
-                    <small>Descuento %</small>
+                    <small>Descuento % {{ $listaSeleccionada ? '(gestionado por lista)' : '(manual)' }}</small>
                 </div>
                 <div class="col-4">
-                    <select class="form-select" wire:model.change="listaSeleccionada" @disabled(! $productoSeleccionado)>
+                    <select class="form-select" wire:model.live="listaSeleccionada" @disabled(! $productoSeleccionado)>
                         <option value="">Lista descuento...</option>
 
                         @foreach($listasDescuento as $lista)
@@ -239,7 +247,7 @@
                 <input type="number"
                     min="1"
                     class="form-control form-control-sm"
-                    wire:model.lazy="carrito.{{ $index }}.cantidad"
+                    wire:model.blur="carrito.{{ $index }}.cantidad"
                     wire:change="actualizarItem({{ $index }})">
             </td>
 
@@ -248,7 +256,7 @@
                 <input type="number"
                     step="0.1"
                     class="form-control form-control-sm"
-                    wire:model.lazy="carrito.{{ $index }}.precio"
+                    wire:model.blur="carrito.{{ $index }}.precio"
                     wire:change="actualizarItem({{ $index }})">
             </td>
 
@@ -257,7 +265,7 @@
                 <input type="number"
                     min="0" max="100"
                     class="form-control form-control-sm"
-                    wire:model.lazy="carrito.{{ $index }}.descuento"
+                    wire:model.blur="carrito.{{ $index }}.descuento"
                     wire:change="actualizarItem({{ $index }})">
             </td>
 
@@ -413,7 +421,7 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label">Observaciones</label>
-                        <textarea class="form-control" rows="3" wire:model.defer="observacionesPago"></textarea>
+                        <textarea class="form-control" rows="3" wire:model.blur="observacionesPago"></textarea>
                     </div>
                 </div>
             </div>
@@ -429,23 +437,21 @@
     </div>
 </div>
 
-@push('custom-scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modalElement = document.getElementById('modalPagoVenta');
-            if (!modalElement) {
-                return;
-            }
-            const modal = new bootstrap.Modal(modalElement);
+@script
+<script>
+    const modalElement = document.getElementById('modalPagoVenta');
 
-            window.addEventListener('show-modal-pago', () => {
-                modal.show();
-            });
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
 
-            window.addEventListener('hide-modal-pago', () => {
-                modal.hide();
-            });
+        window.addEventListener('show-modal-pago', () => {
+            modal.show();
         });
-    </script>
-@endpush
+
+        window.addEventListener('hide-modal-pago', () => {
+            modal.hide();
+        });
+    }
+</script>
+@endscript
 </div>
