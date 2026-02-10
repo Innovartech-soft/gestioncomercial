@@ -16,17 +16,20 @@ class DiarioCajaApiController extends Controller
         $this->middleware('administrador',['except' => ['getEstadoCaja','getReaperturaCaja']]);
     }
     public function getEstadoCaja(){
-        return response()->json(json_encode($this->diarioCajaService->getEstadoCaja()));
+        return response()->json($this->diarioCajaService->getEstadoCaja());
     }
     public function getReaperturaCaja(){
-        return response()->json(json_encode($this->diarioCajaService->getReaperturaCaja()));
+        return response()->json($this->diarioCajaService->getReaperturaCaja());
     }
 
     public function setAbrirCaja(Request $request){
-        return response()->json(json_encode($this->diarioCajaService->setAperturaCaja($request['monto'])));
+        $request->validate([
+            'monto' => ['required', 'numeric', 'min:0'],
+        ]);
+        return response()->json($this->diarioCajaService->setAperturaCaja($request['monto']));
     }
 
     public function setCerrarCaja(){
-        return response()->json(json_encode($this->diarioCajaService->setCierreCaja()));
+        return response()->json($this->diarioCajaService->setCierreCaja());
     }
 }

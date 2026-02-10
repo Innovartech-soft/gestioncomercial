@@ -222,7 +222,7 @@
                           <span class="input-group-text">$</span>
                         </div>
                         <input type="number" id="total_caja" name="total_caja" disabled placeholder="$"
-                          class="form-control" value="{{$totalCajaHoyEfectivo}}">
+                          class="form-control" value="{{$totalCajaHoy}}">
                       </div>
                     </div>
                   </div>

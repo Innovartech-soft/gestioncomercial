@@ -58,7 +58,14 @@ class VentaService
     }
 
     public function listAll(){
-        $ventas = Venta::whereNull('deleted_at')->orderBy('id','DESC')->get();
+        $ventas = Venta::whereNull('deleted_at')
+            ->with([
+                'tipoVenta:id,nombre',
+                'vendedor:id,nombre',
+                'usuario:id,nombre',
+            ])
+            ->orderBy('id','DESC')
+            ->get();
         $data = $this->getDependencias();
         $data['ventas'] = $ventas;
 
@@ -69,6 +76,11 @@ class VentaService
         $ventas = Venta::select('ventas.*')
             ->selectRaw('IFNULL((SELECT 1 FROM ventas_recibos_pagos vrp WHERE vrp.id_venta = ventas.id LIMIT 1), 0) as tiene_pago')
             ->whereNull('ventas.deleted_at')
+            ->with([
+                'tipoVenta:id,nombre',
+                'vendedor:id,nombre',
+                'usuario:id,nombre',
+            ])
             ->where(function ($query) {
                 $query->whereNull('ventas.pagada')
                     ->orWhere('ventas.pagada', 0);
@@ -91,6 +103,9 @@ class VentaService
         return Venta::whereNull('deleted_at')
                 ->where('id_cliente',$idCliente)
                 ->where('id_tipo_venta',3) //Hardcode - 3 => "Venta"
+                ->with([
+                    'vendedor:id,nombre,porcentaje_comision',
+                ])
                 ->where(function ($query) {
                     $query->whereNull('pagada')
                         ->orWhere('pagada', 0);
@@ -101,31 +116,59 @@ class VentaService
     }
 
     public function listAllCerradas(){
-        $ventas = Venta::select('ventas.*')
+        return [
+            'view_cerradas' => true,
+            'ventas' => collect(),
+        ];
+    }
+
+    public function getCerradasQuery(){
+        return Venta::query()
+            ->select([
+                'ventas.id',
+                'ventas.fecha',
+                'ventas.fecha_pago',
+                'ventas.total',
+                'ventas.nombre_cliente',
+                'ventas.id_vendedor',
+                'ventas.id_usuario',
+                'ventas.id_tipo_venta',
+            ])
             ->selectRaw('IFNULL((SELECT 1 FROM ventas_recibos_pagos vrp WHERE vrp.id_venta = ventas.id LIMIT 1), 0) as tiene_pago')
+            ->leftJoin('vendedores', 'vendedores.id', '=', 'ventas.id_vendedor')
+            ->leftJoin('usuarios', 'usuarios.id', '=', 'ventas.id_usuario')
+            ->addSelect([
+                'vendedores.nombre as vendedor_nombre',
+                'usuarios.nombre as usuario_nombre',
+            ])
             ->whereNull('ventas.deleted_at')
-            ->where(function ($query) {
-                    $query->whereNotNull('pagada')
-                        ->where('pagada', 1);
-                })
-            ->orderBy('ventas.fecha_pago', 'DESC')
-            ->get();
-
-        $data = $this->getDependencias();
-        $data['view_cerradas'] = true;
-        $data['ventas'] = $ventas;
-
-        return $data;
+            ->where('ventas.pagada', 1);
     }
 
 
     public function listAllAnuladas(){
-        $ventas = Venta::onlyTrashed()->orderBy('id','DESC')->get();
-        $data = $this->getDependencias();
-        $data['view_cerradas'] = true;
-        $data['ventas'] = $ventas;
+        return [
+            'view_cerradas' => true,
+            'ventas' => collect(),
+        ];
+    }
 
-        return $data;
+    public function getAnuladasQuery(){
+        return Venta::onlyTrashed()
+            ->select([
+                'ventas.id',
+                'ventas.fecha',
+                'ventas.total',
+                'ventas.nombre_cliente',
+                'ventas.id_vendedor',
+                'ventas.id_usuario',
+            ])
+            ->leftJoin('vendedores', 'vendedores.id', '=', 'ventas.id_vendedor')
+            ->leftJoin('usuarios', 'usuarios.id', '=', 'ventas.id_usuario')
+            ->addSelect([
+                'vendedores.nombre as vendedor_nombre',
+                'usuarios.nombre as usuario_nombre',
+            ]);
     }
 
     public function getByClienteId($id){
@@ -144,7 +187,7 @@ class VentaService
     }
 
     public function getById($id){
-        $venta = Venta::findOrFail($id);
+        $venta = Venta::with(['detalleVenta.producto'])->findOrFail($id);
         $this->getHistoricoProductos($venta);
         return $venta;
     }
@@ -211,19 +254,37 @@ class VentaService
      * @param coeficiente
      */
     protected function generarComision($operacion, $coeficiente){
-        $ganancia = $this->getGanancia($operacion->id);
-        $vendedor = $operacion->vendedor;
+        return $this->crearComisionParaVenta($operacion, $coeficiente);
+    }
+
+    /**
+     * Crea una comisión para una venta si aún no existe.
+     */
+    public function crearComisionParaVenta(Venta $venta, $coeficiente = 1){
+        if(!$venta->vendedor){
+            Log::warning('No se pudo crear comisión: venta sin vendedor. Venta ID: '.$venta->id);
+            return null;
+        }
+
+        $comisionExistente = Comision::where('id_venta', $venta->id)->exists();
+        if($comisionExistente){
+            Log::info('Comisión ya existente para venta ID: '.$venta->id);
+            return null;
+        }
+
+        $ganancia = $this->getGanancia($venta->id);
+        $vendedor = $venta->vendedor;
         $comision = $vendedor->comision()->create([
             'fecha' => Carbon::now(),
-            'monto' => round(($ganancia * $vendedor->porcentaje_comision / 100)*$coeficiente,1),
+            'monto' => round(($ganancia * $vendedor->porcentaje_comision / 100) * $coeficiente,1),
             'estado' => 0,
             'periodo' => "",
-            'ganancia_venta' => round($ganancia*$coeficiente,1),
-            //'id_vendedor' => $vendedor->id,
-            'id_venta' => $operacion->id,
+            'ganancia_venta' => round($ganancia * $coeficiente,1),
+            'id_venta' => $venta->id,
             'notas' => '',
         ]);
         Log::info('Comision asignada: '.json_encode($comision));
+        return $comision;
     }
     
     /**
@@ -269,19 +330,8 @@ class VentaService
                         if($montoPago >= 0 && is_null($noCerrar)&&($montoRestante<=$montoPago)){
                             //Si se cubrio con el pago el total del valor de la venta, esta pasa a "pagada"
                             try{
-                                $venta->update(['pagada'=>1]);
-
-                                $gananciaVenta = $this->getGanancia($venta->id);
-                                $vendedor->comision()->create([
-                                    'fecha' => Carbon::now(),
-                                    'monto' => round($gananciaVenta * $vendedor->porcentaje_comision / 100,1),
-                                    'estado' => 0,
-                                    'periodo' => "",
-                                    'ganancia_venta' => round($gananciaVenta,1),
-                                    //'id_vendedor' => $vendedor->id,
-                                    'id_venta' => $venta->id,
-                                    'notas' => '',
-                                ]);
+                                $this->setPagada($venta->id);
+                                $this->crearComisionParaVenta($venta);
 
                                 $vCerradas->push($venta);
 
@@ -320,18 +370,8 @@ class VentaService
                             }
                             if ($montoPagoVenta >= 0 && ($montoRestanteVenta-$montoPagoVenta)<=0) {
                                 try {
-                                    $ventaAbierta->update(['pagada' => 1]);
-
-                                $gananciaVenta = $this->getGanancia($ventaAbierta->id);
-                                $vendedor->comision()->create([
-                                    'fecha' => Carbon::now(),
-                                    'monto' => round($gananciaVenta * $vendedor->porcentaje_comision / 100,1),
-                                    'estado' => 0,
-                                    'periodo' => "",
-                                    'ganancia_venta' => round($gananciaVenta,1),
-                                    'id_venta' => $ventaAbierta->id,
-                                    'notas' => '',
-                                ]);
+                                    $this->setPagada($ventaAbierta->id);
+                                    $this->crearComisionParaVenta($ventaAbierta);
 
                                 $vCerradas->push($ventaAbierta);
 
@@ -348,7 +388,7 @@ class VentaService
         return false;
     }
     /**
-    * Obtiene el saldo restante a pagar de una boleta
+    * Obtiene el saldo restante a pagar de una venta_id
     *
     **/
     private function getMontoRestante($idVenta){

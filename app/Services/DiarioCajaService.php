@@ -19,8 +19,14 @@ class DiarioCajaService
     public function __construct()
     {
         // Obtén el registro de DiarioCaja para el día actual
-        $this->diarioCaja = DiarioCaja::whereDate('created_at', Carbon::today())->whereNotNull('caja_apertura')->whereNull('caja_cierre')->first();
-        $this->diarioCajaHoy = DiarioCaja::whereDate('created_at', Carbon::today())->first();
+        $this->diarioCaja = DiarioCaja::whereDate('fecha', Carbon::today())
+            ->whereNotNull('caja_apertura')
+            ->whereNull('caja_cierre')
+            ->orderByDesc('id')
+            ->first();
+        $this->diarioCajaHoy = DiarioCaja::whereDate('fecha', Carbon::today())
+            ->orderByDesc('id')
+            ->first();
     }
 
     public function getDiarioCaja()
@@ -61,7 +67,10 @@ class DiarioCajaService
     }
     public function setAperturaCaja($monto)
     {
-
+        $monto = is_numeric($monto) ? (float) $monto : null;
+        if (is_null($monto) || $monto < 0) {
+            return false;
+        }
         if(is_null($this->diarioCaja)&&is_null($this->diarioCajaHoy)){
             $diarioCaja = new DiarioCaja();
             $diarioCaja->fecha = Carbon::today();
@@ -87,6 +96,10 @@ class DiarioCajaService
     }
 
     public function updateCajaActual($monto){
+        if (is_null($this->diarioCajaHoy)) {
+            Log::warning('Caja diaria no encontrada para actualizar.');
+            return false;
+        }
         $this->diarioCajaHoy->caja_actual += $monto;
         $this->diarioCajaHoy->update();
         return $this->diarioCajaHoy->caja_actual;

@@ -49,7 +49,7 @@ class DashboardController extends Controller
         $totalProductosStockMinimo = Producto::where('deleted_at',null)->whereColumn('stock','<=','stock_minimo')->count();
         $startDate = Carbon::now()->subDays(7);
         $endDate = Carbon::now();
-        $cajaDiaria = DiarioCaja::whereDate('created_at', Carbon::today())->first();
+        $cajaDiaria = DiarioCaja::whereDate('fecha', Carbon::today())->orderByDesc('id')->first();
         $estadoCaja = $this->diarioCajaService->getEstadoCaja();
         $totalVentasUltimosSieteDias = DB::table('ventas')
             ->whereBetween('created_at', [$startDate, $endDate])

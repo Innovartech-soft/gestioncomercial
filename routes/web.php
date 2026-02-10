@@ -1,26 +1,28 @@
 <?php
-use App\Http\Controllers\LogController;
-use App\Http\Controllers\ListaController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\MarcaController;
-use App\Http\Controllers\RubroController;
-use App\Http\Controllers\VentaController;
-use App\Http\Controllers\ChequeController;
-use App\Http\Controllers\CompraController;
-use App\Http\Controllers\ReciboController;
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\ComisionController;
-use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\VendedorController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ParametroController;
+use App\Http\Controllers\RubroController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
-use App\Http\Controllers\DiarioCajaController;
-use App\Http\Controllers\ImportacionController;
-use App\Http\Controllers\ListaGananciaController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CompraController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\CuentaCorrienteController;
+use App\Http\Controllers\ReciboController;
+use App\Http\Controllers\ParametroController;
+use App\Http\Controllers\ListaController;
+use App\Http\Controllers\VendedorController;
+use App\Http\Controllers\LogController;
+use App\Http\Controllers\ImportacionController;
+use App\Http\Controllers\ChequeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpresionDeFacturaController;
+use App\Http\Controllers\ComisionController;
+use App\Http\Controllers\DiarioCajaController;
+use App\Http\Controllers\RepartidorController;
+use App\Http\Controllers\ViajeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -154,9 +156,10 @@ Route::group(['middleware'=>'auth'], function(){
     //Venta routes Start
     Route::group(['prefix' => 'venta'], function(){
         Route::get('index',[VentaController::class , 'index'])->name('venta.index');
-        Route::get('gestionVentas',[VentaController::class , 'gestionVenta'])->name('venta.gestionVenta');
         Route::get('indexCerradas',[VentaController::class , 'indexCerradas'])->name('venta.indexCerradas');
+        Route::get('cerradas/data',[VentaController::class , 'getDataCerradas'])->name('venta.cerradas.data');
         Route::get('indexAnuladas',[VentaController::class , 'indexAnuladas'])->name('venta.indexAnuladas');
+        Route::get('anuladas/data',[VentaController::class , 'getDataAnuladas'])->name('venta.anuladas.data');
         Route::get('create',[VentaController::class , 'create'])->name('venta.create');
         Route::get('{id}/edit',[VentaController::class , 'edit'])->name('venta.edit');
         Route::get('{id}',[VentaController::class , 'show'])->name('venta.show');
@@ -187,15 +190,6 @@ Route::group(['middleware'=>'auth'], function(){
         Route::post('{id}/update',[ListaController::class , 'update'])->name('lista.update');
         Route::delete('delete/{id}',[ListaController::class , 'destroy'])->name('lista.destroy');
     });
-    
-    Route::group(['prefix' => 'listaganancia'],function(){
-        Route::get('index',[ListaGananciaController::class , 'index'])->name('listaganancia.index');
-        Route::get('create',[ListaGananciaController::class , 'create'])->name('listaganancia.create');
-        Route::get('{id}/edit',[ListaGananciaController::class , 'edit'])->name('listaganancia.edit');
-        Route::post('store',[ListaGananciaController::class , 'store'])->name('listaganancia.store')->middleware('throttle:'.env('THROTTLE_STORE_TIME'));
-        Route::post('{id}/update',[ListaGananciaController::class , 'update'])->name('listaganancia.update');
-        Route::delete('delete/{id}',[ListaGananciaController::class , 'destroy'])->name('listaganancia.destroy');
-    });
 
     Route::group(['prefix' => 'vendedor'],function(){
         Route::get('index',[VendedorController::class , 'index'])->name('vendedor.index');
@@ -205,6 +199,28 @@ Route::group(['middleware'=>'auth'], function(){
         Route::post('{id}/update',[VendedorController::class , 'update'])->name('vendedor.update');
         Route::delete('delete/{id}',[VendedorController::class , 'destroy'])->name('vendedor.destroy');
         Route::post('exportarvendedorexcel', [VendedorController::class,'exportarExcel'])->name('vendedor.exportarexcel');
+    });
+
+    Route::group(['prefix' => 'repartidor'], function () {
+        Route::get('index', [RepartidorController::class, 'index'])->name('repartidor.index');
+        Route::get('create', [RepartidorController::class, 'create'])->name('repartidor.create');
+        Route::get('{id}/edit', [RepartidorController::class, 'edit'])->name('repartidor.edit');
+        Route::post('store', [RepartidorController::class, 'store'])->name('repartidor.store')->middleware('throttle:' . env('THROTTLE_STORE_TIME'));
+        Route::put('{id}/update', [RepartidorController::class, 'update'])->name('repartidor.update');
+        Route::delete('delete/{id}', [RepartidorController::class, 'destroy'])->name('repartidor.destroy');
+    });
+    
+    Route::group(['prefix' => 'viaje'], function () {
+        Route::get('index', [ViajeController::class, 'index'])->name('viaje.index');
+        Route::get('create', [ViajeController::class, 'create'])->name('viaje.create');
+        Route::get('{id}/edit', [ViajeController::class, 'edit'])->name('viaje.edit');
+        Route::post('store', [ViajeController::class, 'store'])->name('viaje.store')->middleware('throttle:' . env('THROTTLE_STORE_TIME'));
+        Route::put('{viaje}/update', [ViajeController::class, 'update'])->name('viaje.update');
+        Route::delete('delete/{viaje}', [ViajeController::class, 'destroy'])->name('viaje.destroy');
+        Route::get('viaje/export/{id}', [ViajeController::class, 'exportExcel'])->name('viaje.export');
+        Route::post('/viaje/cambiar-estado', [ViajeController::class, 'cambiarEstado'])->name('viaje.cambiarEstado');
+        Route::get('/view/{viajeId}', [ViajeController::class, 'view'])->name('viaje.view');
+
     });
 
     Route::group(['prefix' => 'cheque'],function(){
