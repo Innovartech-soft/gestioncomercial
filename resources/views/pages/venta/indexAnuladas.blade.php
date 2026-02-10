@@ -33,19 +33,7 @@
                 <th>Usuario</th>
               </tr>
             </thead>
-            <tbody>
-              @foreach ($ventas as $venta)
-              <tr>
-                <td>{{ $venta->numero_venta }}</td>
-                <td>{{ date('d/m/Y', strtotime($venta->fecha)) }}</td>
-                <td>$ {{ round($venta->total,1)}}</td>
-                <td>{{ $venta->nombre_cliente }}</td>
-                <td><a href="{{ route('vendedor.edit',$venta->vendedor->id )}}">{{ $venta->vendedor->nombre }}</a></td>
-                <td>{{ $venta->usuario->nombre }}</td>                
-              </tr>
-              @endforeach
-
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -66,9 +54,12 @@
 
 @push('custom-scripts')
 <!-- Custom js here -->
+<script>
+  var urlData = "{{ route('venta.anuladas.data') }}";
+</script>
 <script src="{{ asset('assets/js/register-delete.js') }}"></script>
 <script src="{{ asset('assets/js/register-save.js') }}"></script>
-<script src="{{ asset('assets/js/data-table-ventas-cerradas.js') }}"></script>
+<script src="{{ asset('assets/js/data-table-ventas-anuladas.js') }}"></script>
 <script>
   var token = "{{ session('token') }}";
   // var venta_id = "{{}}"

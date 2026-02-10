@@ -74,9 +74,11 @@ class ReciboService
 
     public function searchByFechaHoy(){
         $fechaHoy = Carbon::today();
+        $inicioDia = $fechaHoy->copy()->startOfDay();
+        $finDia = $fechaHoy->copy()->endOfDay();
 
         $recibos = Recibo::whereNull('deleted_at')
-            ->whereDate('created_at', $fechaHoy)
+            ->whereBetween('created_at', [$inicioDia, $finDia])
             ->orderBy('id', 'desc')
             ->get();
         return $recibos;
@@ -87,9 +89,11 @@ class ReciboService
     */
     public function getTotalesByFechaHoy() {
         $fechaHoy = Carbon::today();
+        $inicioDia = $fechaHoy->copy()->startOfDay();
+        $finDia = $fechaHoy->copy()->endOfDay();
 
         $total = Recibo::whereNull('deleted_at')
-            ->whereDate('created_at', $fechaHoy)
+            ->whereBetween('created_at', [$inicioDia, $finDia])
             ->where('afectar_caja',1)
             ->sum(\DB::raw('CASE WHEN es_cobro = 1 THEN monto ELSE -monto END'));
 
@@ -102,10 +106,12 @@ class ReciboService
     public function getTotalesEfectivoByFechaHoy() {
 
         $fechaHoy = Carbon::today();
+        $inicioDia = $fechaHoy->copy()->startOfDay();
+        $finDia = $fechaHoy->copy()->endOfDay();
         $totalEfectivo = Recibo::withTrashed()->from('recibos as r')
         ->join('recibos_metodos_pagos as rm', 'r.id', '=', 'rm.id_recibo')
         ->join('metodos_pagos as mp', 'mp.id', '=', 'rm.id_metodo_pago')
-        ->whereDate('r.created_at', $fechaHoy)
+        ->whereBetween('r.created_at', [$inicioDia, $finDia])
         ->whereNull('r.deleted_at')
         ->where('r.afectar_caja',1)
         ->where(function($query) {
@@ -311,9 +317,15 @@ class ReciboService
 
             $ventasRecibo = VentaReciboPago::where('id_recibo', $recibo->id)->get();
             foreach ($ventasRecibo as $registro) {
-                if($registro->venta->pagada==1){
-                    //Eliminar la comision asociada al cierre de la venta
-                    $comisiones = Comision::where('id_venta', $registro->venta->id)->get();
+                $venta = $registro->venta;
+                $registro->delete();
+
+                $totalPagos = VentaReciboPago::where('id_venta', $venta->id)->sum('monto');
+                if($totalPagos < $venta->total){
+                    //Eliminar comisiones pendientes solo si la venta queda impaga
+                    $comisiones = Comision::where('id_venta', $venta->id)
+                        ->where('estado', 0)
+                        ->get();
                     foreach($comisiones as $comision){
                         try {
                             $comision->delete();
@@ -321,10 +333,10 @@ class ReciboService
                             Log::alert('Ha ocurrido un error al eliminar una comision. ERROR: ' . $th->getMessage());
                         }
                     }
+                    $venta->update(['pagada' => 0, 'fecha_pago' => null]);
+                }else{
+                    $venta->update(['pagada' => 1]);
                 }
-                
-                $registro->venta->update(['pagada' => 0]);
-                $registro->delete();
             }
 
             //Obtengo el listado de las cuentas corrientes del cliente

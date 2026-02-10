@@ -41,10 +41,10 @@
               <a href="{{ url('venta/index') }}" class="nav-link {{ active_class(['venta/index']) }}">Listado de Ventas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexcerradas') }}" class="nav-link {{ active_class(['venta/indexcerradas']) }}">Listado de Cerradas</a>
+              <a href="{{ route('venta.indexCerradas') }}" class="nav-link {{ active_class(['venta/indexCerradas']) }}">Listado de Cerradas</a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('venta/indexanuladas') }}" class="nav-link {{ active_class(['venta/indexanuladas']) }}">Listado de Anuladas</a>
+              <a href="{{ route('venta.indexAnuladas') }}" class="nav-link {{ active_class(['venta/indexAnuladas']) }}">Listado de Anuladas</a>
             </li>
           </ul>
         </div>
@@ -194,6 +194,54 @@
         </div>
       </li>
 
+      <!-- VIAJES -->
+      <li class="nav-item nav-category">Viajes</li>
+      <li class="nav-item {{ active_class(['viaje/*']) }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#viaje" role="button"
+          aria-expanded="{{ is_active_route(['viaje/*']) }}" aria-controls="auth">
+          <i class="link-icon" data-feather="navigation"></i>
+          <span class="link-title"> Viajes</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse {{ show_class(['viaje/*']) }}" id="viaje">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a href="{{ url('viaje/index') }}" class="nav-link {{ active_class(['viaje/login']) }}">Listado de
+                Viajes</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url('viaje/create') }}" class="nav-link {{ active_class(['viaje/register']) }}">Alta de
+                Viajes</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- REPARTIDORES -->
+      <li class="nav-item nav-category">Repartidores</li>
+      <li class="nav-item {{ active_class(['repartidor2/*']) }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#repartidor2" role="button"
+          aria-expanded="{{ is_active_route(['repartidor/*']) }}" aria-controls="auth">
+          <i class="link-icon" data-feather="truck"></i>
+          <span class="link-title"> Repartidores</span>
+          <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse {{ show_class(['repartidor/*']) }}" id="repartidor2">
+          <ul class="nav sub-menu">
+            <li class="nav-item">
+              <a href="{{ url('repartidor/index') }}" class="nav-link {{ active_class(['repartidor2/login']) }}">Listado
+                de
+                Repartidores</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url('repartidor/create') }}"
+                class="nav-link {{ active_class(['repartidor2/register']) }}">Alta
+                de Repartidor</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
       <!-- MARCAS -->
       <li class="nav-item nav-category">Marcas</li>
       <li class="nav-item {{ active_class(['marca/*']) }}">
@@ -326,7 +374,7 @@
       </li>
 
       <!-- PARÁMETROS -->
-      <li class="nav-item nav-category">Parametros del Sistema</li>
+      <li class="nav-item nav-category">Parametros</li>
       <li class="nav-item {{ active_class(['parametros/*']) }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#parametros"
            aria-expanded="{{ is_active_route(['parametros/*']) }}" aria-controls="parametros">
@@ -339,7 +387,7 @@
           <ul class="nav sub-menu">
             <li class="nav-item">
               <a href="{{url('parametros/edit')}}" class="nav-link {{ active_class(['parametros/edit']) }}">
-                Parametros
+                Configurar
               </a>
             </li>
           </ul>

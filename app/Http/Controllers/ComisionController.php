@@ -46,17 +46,19 @@ class ComisionController extends Controller
     {
         $venta = Venta::with('vendedor')->findOrFail($request->id_venta);
 
-        // Calcular la ganancia y la comisión
-        $porcentaje_comision = $venta->vendedor->porcentaje_comision;
-        $ganancia = VentaService::getGanancia($venta->id);
-        $monto_comision = ($ganancia * $porcentaje_comision )/ 100;
-        $comision = Comision::create([
-            'id_venta' => $venta->id,
-            'id_vendedor' => $venta->id_vendedor,
-            'monto' => round($monto_comision,1),
-            'fecha' => Carbon::now(),
-            'ganancia_venta' => round($ganancia,1),
-        ]);
+        $comisionExistente = Comision::where('id_venta', $venta->id)->first();
+        if($comisionExistente){
+            if(!$venta->pagada){
+                $this->ventaService->setPagada($venta->id);
+            }
+            return redirect()->back()->with('warning','La Venta '.$venta->numero_venta.' ya tiene una comisión asignada.');
+        }
+
+        $comision = $this->ventaService->crearComisionParaVenta($venta);
+        if(!$comision){
+            return redirect()->back()->with('error','No se pudo asignar la comisión para la venta '.$venta->numero_venta.'.');
+        }
+
         $this->ventaService->setPagada($venta->id);
         
         $this->registrarEnLog('success', $comision);

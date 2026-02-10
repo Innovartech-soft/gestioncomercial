@@ -15,15 +15,15 @@ $(document).ready(function () {
 			success: function (data) {
 
 				// console.log('Estado caja:'+data);
-				if (data === 'true') {
+				if (data === true) {
 					setEstadoEtiqueta(data);
-					$('#divCerrarCaja').attr('display', 'flex');
-					$('#divAbrirCaja').attr('display', 'none');
+					$('#divCerrarCaja').css('display', 'flex');
+					$('#divAbrirCaja').css('display', 'none');
 				}
 				else {
 					setEstadoEtiqueta(data);
-					$('#divAbrirCaja').attr('display', 'flex');
-					$('#divCerrarCaja').attr('display', 'none');
+					$('#divAbrirCaja').css('display', 'flex');
+					$('#divCerrarCaja').css('display', 'none');
 				}
 			},
 			error: function (error) {
@@ -39,8 +39,8 @@ $(document).ready(function () {
 			success: function (data) {
 				// console.log('Reapertura caja:'+data);
 				var campos = $('#divAbrirCaja :input'); // Obtiene todos los campos dentro de la div
-				campos.prop('disabled', data === 'false'); // Habilita o deshabilita los campos según el valor de data
-				if (data === 'false') {
+				campos.prop('disabled', data === false); // Habilita o deshabilita los campos según el valor de data
+				if (data === false) {
 					$('#abrirCajaMonto').val(''); // Borra el valor del input si data es "false"
 				}
 			},
@@ -108,9 +108,9 @@ $(document).ready(function () {
 	});
 
 	function setEstadoEtiqueta(estado) {
-		if (estado === 'true' || estado == true)
+		if (estado === true)
 			estado = '<br>Abierta';
-		else if (estado === 'false' || estado == false)
+		else if (estado === false)
 			estado = '<br>Cerrada';
 
 		$("#estadoCajaLabel").html(estado);
