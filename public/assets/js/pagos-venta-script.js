@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('.btnPagos').on('click', function () {
+    $(document).on('click', '.btnPagos', function () {
         var idVenta = $(this).data('id-venta');
     	var total = $(this).data('total');
         $.ajax({

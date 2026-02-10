@@ -1,6 +1,6 @@
 //Muestra el modal con el detalle de una venta
   $(document).ready(function () {
-    $('.btnVerComprobante').click(function () {
+    $(document).on('click', '.btnVerComprobante', function () {
         var idVenta = $(this).data('id-venta');
         $.ajax({
             type: 'GET',

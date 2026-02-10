@@ -9,7 +9,7 @@ $(function () {
       processing: true,
       serverSide: true,
       ajax: urlData,
-      order: [[2, 'desc']],
+      order: [[0, 'desc']],
       aLengthMenu: [
         [10, 30, 50, -1],
         [10, 30, 50, "Todos"]
@@ -23,12 +23,10 @@ $(function () {
       columns: [
         { data: 'numero_venta', name: 'ventas.id' },
         { data: 'fecha', name: 'ventas.fecha' },
-        { data: 'fecha_pago', name: 'ventas.fecha_pago' },
         { data: 'total', name: 'ventas.total', render: $.fn.dataTable.render.number(',', '.', 1, '$ ') },
         { data: 'cliente', name: 'ventas.nombre_cliente' },
         { data: 'vendedor', name: 'vendedores.nombre' },
-        { data: 'usuario', name: 'usuarios.nombre' },
-        { data: 'acciones', name: 'acciones', orderable: false, searchable: false }
+        { data: 'usuario', name: 'usuarios.nombre' }
       ],
       drawCallback: function () {
         var datatable = $('#dataTableVentas');

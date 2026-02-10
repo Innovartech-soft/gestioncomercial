@@ -17,12 +17,14 @@ License: For each use you must have a valid license purchased only from above li
 	<meta name="author" content="NobleUI">
 	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, laravel, theme, front-end, ui kit, web">
 
-  <title>OesteLed - Gestion Comercial</title>
+  <title>Gestion Comercial</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <!-- End fonts -->
 
   <!-- CSRF Token -->
@@ -74,6 +76,7 @@ License: For each use you must have a valid license purchased only from above li
 
   <!-- common css -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/app.theme.css') }}" rel="stylesheet"> <!-- <- overrides -->
   <!-- Plugin css import here -->
     <link href="{{ asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/plugins/jquery-tags-input/jquery.tagsinput.min.css') }}" rel="stylesheet" />
@@ -84,6 +87,9 @@ License: For each use you must have a valid license purchased only from above li
   <!-- end common css -->
 
   @stack('style')
+
+  @livewireStyles
+
 </head>
 <body data-base-url="{{url('/')}}" class="sidebar-dark">
 
@@ -99,7 +105,7 @@ License: For each use you must have a valid license purchased only from above li
       @include('layout.footer')
     </div>
   </div>
-
+  @livewireScripts
     <!-- base js -->
 
     <script src="{{ asset('js/app.js') }}"></script>
@@ -115,12 +121,10 @@ License: For each use you must have a valid license purchased only from above li
     <!-- common js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/l10n/es.js"> </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/l10n/es.js"></script>
 
     <!-- end common js -->
-
+    
     @stack('custom-scripts')
 </body>
 </html>

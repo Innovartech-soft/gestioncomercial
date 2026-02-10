@@ -20,6 +20,13 @@ class VentaController extends Controller
         $this->middleware('administrador',['except' => ['index','getReaperturaCaja','indexCerradas','indexAnuladas','setProformaToVenta','getPagosByVentaJSON','exportarVentaCerrada']]);
         */
     }
+
+    public function gestionVenta()
+    {
+        return view('pages.venta.gestionVenta');
+    }
+
+
     /**
      * Display a listing of the resource.
      */
